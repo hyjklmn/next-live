@@ -8,6 +8,8 @@
 @media (prefers-color-scheme: dark){
 	:root{
 		--color-bg-default: #252b30;
+  --color-text-default:#f1f2f2;
+
 	}
 }
 
