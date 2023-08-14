@@ -16,7 +16,7 @@ export default function Header() {
   }
 
   return (
-    <div className="navbar border-b-1">
+    <div className="navbar shadow-gray-500 shadow-sm">
       <div className="flex-1 px-2 lg:flex-none">
         <a className="text-lg font-bold">daisyUI</a>
       </div>
