@@ -2,6 +2,9 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Header from '@/components/header'
+import DrawerSide from '@/components/DrawerSide'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -16,8 +19,11 @@ export default function RootLayout({
 
   return (
     <html>
-      <body className={`h-screen ${inter.className}`} >
-        {children}
+      <body className={`min-h-screen ${inter.className}`} >
+        <Header />
+        <div className="p-3">
+          {children}
+        </div>
       </body>
     </html>
   )
