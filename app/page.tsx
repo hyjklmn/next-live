@@ -1,5 +1,8 @@
+import { redirect } from "next/navigation"
 export default function Home() {
   return (
-    <>1</>
+    <>
+      {redirect('/recommend')}
+    </>
   )
 }
