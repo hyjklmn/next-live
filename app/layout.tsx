@@ -1,9 +1,9 @@
 "use client"
+import { StrictMode } from 'react'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
-import DrawerSide from '@/components/DrawerSide'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +21,7 @@ export default function RootLayout({
     <html>
       <body className={`min-h-screen ${inter.className}`} >
         <Header />
-        <div className="p-3">
+        <div className="px-3 py-6">
           {children}
         </div>
       </body>
