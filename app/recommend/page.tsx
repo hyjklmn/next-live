@@ -22,9 +22,6 @@ export default function Page() {
 
   return (
     <>
-      <Head>
-        <meta name='referrer' content='no-referrer' />
-      </Head>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 place-items-center">
         {
           <RoomCard list={recommendList} />
