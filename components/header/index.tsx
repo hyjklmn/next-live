@@ -71,32 +71,32 @@ export default function Header() {
       <div className="flex px-2 lg:flex-none">
         <a className="text-lg font-bold">daisyUI</a>
       </div>
-      {/* <div className="hidden md:flex flex-1 justify-end gap-2"> */}
-      <nav
-        onMouseMove={handleMouseMove}
-        className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
+      <div className="hidden md:flex flex-1 justify-end gap-2">
+        <nav
+          onMouseMove={handleMouseMove}
+          className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
         ">
-        {/* Spotlight overlay */}
-        <motion.div
-          className="pointer-events-none absolute -inset-px rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          style={{ background }}
-          aria-hidden="true"
-        />
+          {/* Spotlight overlay */}
+          <motion.div
+            className="pointer-events-none absolute -inset-px rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style={{ background }}
+            aria-hidden="true"
+          />
 
-        <ul className="flex bg-transparent px-3 text-sm font-medium text-zinc-800 dark:text-zinc-200 ">
-          {NavLinks.map((nav) => (
-            <NavItem key={nav.key} href={nav.url}>
-              {nav.title}
-            </NavItem>
-          ))}
-        </ul>
-      </nav>
-      {/* </div> */}
+          <ul className="flex bg-transparent px-3 text-sm font-medium text-Indigo-800 dark:text-zinc-200 ">
+            {NavLinks.map((nav) => (
+              <NavItem key={nav.key} href={nav.url}>
+                {nav.title}
+              </NavItem>
+            ))}
+          </ul>
+        </nav>
+      </div>
 
       <div className="hidden md:flex flex-1 justify-end">
         <div className="flex items-center">
           <Search />
-          <button className='btn btn-circle btn-sm' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
+          <button className='btn btn-circle btn-sm mr-2' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
             {mode === "light" ? <SunIcon /> : <MoonIcon />}
           </button>
           <div className="dropdown dropdown-end">
