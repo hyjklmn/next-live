@@ -4,7 +4,7 @@
 :root {
   --color-bg-default: #f1f2f2;
   --color-text-default:#252b30;
-  --spotlight-color:#f1f2f2
+ 
 }
 @media (prefers-color-scheme: dark){
 	:root{

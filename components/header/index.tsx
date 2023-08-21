@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { themeChange } from 'theme-change'
-import { MoonIcon, SunIcon, ChevronDownIcon, } from '@radix-ui/react-icons'
+import { MoonIcon, SunIcon, ChevronDownIcon, ArrowRightIcon } from '@radix-ui/react-icons'
 import Search from './Search'
 import Hamburg from './Hamburg'
 import { NavLinks } from '@/composables/NavLinks'
@@ -43,6 +43,8 @@ export default function Header() {
   useEffect(() => {
     themeChange(false)
   }, [])
+
+  let isLogin = false
 
 
   const [mode, setMode] = useState('dark')
@@ -99,20 +101,29 @@ export default function Header() {
           <button className='btn btn-circle btn-sm mr-2' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
             {mode === "light" ? <SunIcon /> : <MoonIcon />}
           </button>
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">关注列表</label>
-            <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-              <li><a>Item 1</a></li>
-              <li><a>Item 2</a></li>
-            </ul>
-          </div>
-          <details className="dropdown dropdown-end">
-            <summary tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">8588 <ChevronDownIcon /></summary>
-            <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-              <li><a>Item 1</a></li>
-              <li><a>Item 2</a></li>
-            </ul>
-          </details>
+          {
+            !isLogin ?
+              <div className='mx-3'>
+                <button className="btn btn-sm">登录</button>
+              </div> : <div>
+                <div className="dropdown dropdown-end">
+                  <label tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">关注列表</label>
+                  <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                    <li><a>Item 1</a></li>
+                    <li><a>Item 2</a></li>
+                  </ul>
+                </div>
+                <details className="dropdown dropdown-end">
+                  <summary tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">8588 <ChevronDownIcon /></summary>
+                  <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                    <li><a>Item 1</a></li>
+                    <li><a>Item 2</a></li>
+                  </ul>
+                </details>
+              </div>
+          }
+
+
         </div>
       </div>
       <Hamburg />
