@@ -43,19 +43,7 @@ function NavItem({ href, children, }: {
 
 
 export default function Header() {
-  useEffect(() => {
-    themeChange(false)
-  }, [])
-
   let isLogin = false
-
-
-  const [mode, setMode] = useState('dark')
-  const changeColorMode = () => {
-    let doc = document.querySelector('html')
-    let dataTheme = doc?.getAttribute('data-theme')
-    mode === 'dark' ? setMode('light') : setMode('dark')
-  }
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
@@ -75,9 +63,9 @@ export default function Header() {
     <div className='sticky top-0 left-0 z-10 bg-inherit w-screen'>
       <div className="flex h-14 gap-2 shadow-gray-500 shadow-sm items-center">
         <div className="flex px-2 lg:flex-none">
-          <a className="text-lg font-bold">Lorem ipsum sit amet conseim.</a>
+          <a className="text-lg font-bold">Lorem</a>
         </div>
-        <div className="hidden md:flex flex-1 justify-end gap-2">
+        <div className=" flex-1 justify-end gap-2">
           <nav
             onMouseMove={handleMouseMove}
             className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
