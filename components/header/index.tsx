@@ -65,7 +65,7 @@ export default function Header() {
         <div className="flex px-2 lg:flex-none">
           <a className="text-lg font-bold">Lorem</a>
         </div>
-        <div className=" flex-1 justify-end gap-2">
+        <div className="hidden md:flex flex-1 justify-end gap-2">
           <nav
             onMouseMove={handleMouseMove}
             className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
@@ -90,9 +90,6 @@ export default function Header() {
         <div className="hidden md:flex flex-1 justify-end">
           <div className="flex items-center">
             <Search />
-            {/* <button className='btn btn-circle btn-sm mr-2' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
-            {mode === "light" ? <SunIcon /> : <MoonIcon />}
-          </button> */}
             <ModeToggle />
             {
               !isLogin ?
