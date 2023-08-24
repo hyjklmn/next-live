@@ -8,6 +8,9 @@ import Hamburg from './Hamburg'
 import { NavLinks } from '@/composables/NavLinks'
 import { usePathname } from 'next/navigation'
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
+import { ModeToggle } from '@/components/mode-toggle'
+import { Button } from "@/components/ui/button"
+
 
 
 function NavItem({ href, children, }: {
@@ -69,64 +72,65 @@ export default function Header() {
   const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
 
   return (
-    <div className="navbar sticky t-0 l-0 z-10 backdrop-blur gap-2 shadow-gray-500 shadow-sm justify-between">
-      <div className="flex px-2 lg:flex-none">
-        <a className="text-lg font-bold">daisyUI</a>
-      </div>
-      <div className="hidden md:flex flex-1 justify-end gap-2">
-        <nav
-          onMouseMove={handleMouseMove}
-          className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
-        ">
-          {/* Spotlight overlay */}
-          <motion.div
-            className="pointer-events-none absolute -inset-px rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-            style={{ background }}
-            aria-hidden="true"
-          />
-
-          <ul className="flex bg-transparent px-3 text-sm font-medium text-Indigo-800 dark:text-zinc-200 ">
-            {NavLinks.map((nav) => (
-              <NavItem key={nav.key} href={nav.url}>
-                {nav.title}
-              </NavItem>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      <div className="hidden md:flex flex-1 justify-end">
-        <div className="flex items-center">
-          <Search />
-          <button className='btn btn-circle btn-sm mr-2' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
-            {mode === "light" ? <SunIcon /> : <MoonIcon />}
-          </button>
-          {
-            !isLogin ?
-              <div className='mx-3'>
-                <button className="btn btn-sm">登录</button>
-              </div> : <div>
-                <div className="dropdown dropdown-end">
-                  <label tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">关注列表</label>
-                  <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
-                  </ul>
-                </div>
-                <details className="dropdown dropdown-end">
-                  <summary tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">8588 <ChevronDownIcon /></summary>
-                  <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
-                  </ul>
-                </details>
-              </div>
-          }
-
-
+    <div className='sticky top-0 left-0 z-10 bg-inherit w-screen'>
+      <div className="flex h-14 gap-2 shadow-gray-500 shadow-sm items-center">
+        <div className="flex px-2 lg:flex-none">
+          <a className="text-lg font-bold">Lorem ipsum sit amet conseim.</a>
         </div>
+        <div className="hidden md:flex flex-1 justify-end gap-2">
+          <nav
+            onMouseMove={handleMouseMove}
+            className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
+        ">
+            {/* Spotlight overlay */}
+            <motion.div
+              className="pointer-events-none absolute -inset-px rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              style={{ background }}
+              aria-hidden="true"
+            />
+
+            <ul className="flex bg-transparent px-3 text-sm font-medium text-Indigo-800 dark:text-zinc-200 ">
+              {NavLinks.map((nav) => (
+                <NavItem key={nav.key} href={nav.url}>
+                  {nav.title}
+                </NavItem>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        <div className="hidden md:flex flex-1 justify-end">
+          <div className="flex items-center">
+            <Search />
+            {/* <button className='btn btn-circle btn-sm mr-2' data-set-theme={mode} data-act-class={mode} onClick={changeColorMode}>
+            {mode === "light" ? <SunIcon /> : <MoonIcon />}
+          </button> */}
+            <ModeToggle />
+            {
+              !isLogin ?
+                <div className='mx-3'>
+                  <Button variant="ghost" className="btn btn-sm">登录</Button>
+                </div> : <div>
+                  <div className="dropdown dropdown-end">
+                    <label tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">关注列表</label>
+                    <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                      <li><a>Item 1</a></li>
+                      <li><a>Item 2</a></li>
+                    </ul>
+                  </div>
+                  <details className="dropdown dropdown-end">
+                    <summary tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">8588 <ChevronDownIcon /></summary>
+                    <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
+                      <li><a>Item 1</a></li>
+                      <li><a>Item 2</a></li>
+                    </ul>
+                  </details>
+                </div>
+            }
+          </div>
+        </div>
+        <Hamburg />
       </div>
-      <Hamburg />
     </div>
   )
 }

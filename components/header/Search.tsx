@@ -1,10 +1,14 @@
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 // import React from 'react'
 export default function Search() {
   return (
-    <div className='flex gap-1 mr-2'>
-      <input type="text" placeholder="Type here" className="input input-sm input-bordered focus:outline-0" />
-      <button className='btn btn-circle btn-sm border'><MagnifyingGlassIcon /></button>
+    <div className="flex items-center space-x-2 mr-3">
+      <Input type="text" placeholder="Email" />
+      <Button size="icon" variant="outline" className="rounded-full shrink-0">
+        <MagnifyingGlassIcon />
+      </Button>
     </div>
   )
 }

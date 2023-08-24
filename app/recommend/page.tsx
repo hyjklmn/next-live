@@ -17,15 +17,16 @@ export default function Page() {
       throw new Error('Failed to fetch data')
     }
     const data = await res.json()
-    setRecommendList((recommendList: any) => [...data.data])
+    setRecommendList((recommendList: any) => {
+      return data.data.filter((d: any) => {
+        return d.platForm !== 'bilibili'
+      })
+    })
   }
-
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 place-items-center">
-        {
-          <RoomCard list={recommendList} />
-        }
+        {<RoomCard list={recommendList} />}
       </div>
     </>
   )

@@ -1,9 +1,9 @@
 "use client"
-import { StrictMode } from 'react'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
+import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,12 +19,12 @@ export default function RootLayout({
 }) {
 
   return (
-    <html>
-      <body className={`min-h-screen ${inter.className}`} >
+    <html suppressHydrationWarning>
+      <body className={`min-h-screen overflow-hidden ${inter.className}`} >
         <Header />
-        <div className="px-3 py-6">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
-        </div>
+        </ThemeProvider>
       </body>
     </html>
   )
