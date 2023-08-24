@@ -60,8 +60,8 @@ export default function Header() {
   const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
 
   return (
-    <div className='sticky top-0 left-0 z-10 bg-inherit w-screen'>
-      <div className="flex h-14 gap-2 shadow-gray-500 shadow-sm items-center">
+    <div className='sticky top-0 left-0 z-10 h-14 bg-inherit w-screen px-2 shadow-gray-500 shadow-sm'>
+      <div className="flex h-full gap-2 items-center">
         <div className="flex px-2 lg:flex-none">
           <a className="text-lg font-bold">Lorem</a>
         </div>
