@@ -18,9 +18,7 @@ export default function Page() {
     }
     const data = await res.json()
     setRecommendList((recommendList: any) => {
-      return data.data.filter((d: any) => {
-        return d.platForm !== 'bilibili'
-      })
+      return data.data
     })
   }
   return (
