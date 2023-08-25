@@ -3,12 +3,19 @@ const next = require('next')
 const {createProxyMiddleware } = require('http-proxy-middleware')
 
 const devProxy = {
-    '/api': {
-        target: 'http://yj1211.work:8013', // 端口自己配置合适的
+    // '/api': {
+    //     target: 'http://yj1211.work:8013', // 端口自己配置合适的
+    //     pathRewrite: {
+    //         '^/api': '/api'
+    //     },
+    //     changeOrigin: true
+    // },
+    '/dyu': {
+        target: 'https://www.douyu.com', 
         pathRewrite: {
-            '^/api': '/api'
+            '^/dyu': ''
         },
-        changeOrigin: true
+        changeOrigin: true 
     }
 }
 

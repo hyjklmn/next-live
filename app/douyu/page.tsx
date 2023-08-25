@@ -1,12 +1,11 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import Head from 'next/head'
 import RoomCard from '@/components/RoomCard'
-
+import { getSubCategories, getCategores } from '@/lib/apis/douyu'
 export default function Page() {
 
   useEffect(() => {
-    asd()
+    const data = getCategores()
   }, [])
 
   const [recommendList, setRecommendList] = useState<any>([])

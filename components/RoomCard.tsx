@@ -1,6 +1,6 @@
 import React from 'react'
 import Image, { ImageLoaderProps } from 'next/image'
-import { platFormNameConvert, onlineConvert } from '@/composables/Platforms'
+import { platFormNameConvert, onlineConvert } from '@/lib/Platforms'
 import {
   Card,
   CardContent,
