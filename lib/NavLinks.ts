@@ -1,11 +1,11 @@
 export const NavLinks = [
   {
-    url: '/dy',
+    url: '/douyu',
     title: '斗鱼',
     key: 1
   },
   {
-    url: '/hy',
+    url: '/huya',
     title: '虎牙',
     key: 2
 

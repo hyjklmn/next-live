@@ -1,4 +1,5 @@
-import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory } from "../types/apis";
+import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, DouYuSearchRoomResult } from "../types/apis";
+import { liveResult } from "../LiveResult";
 
 function getCategores() {
   const LiveCategory: DouYuLiveCategory = [
@@ -22,7 +23,7 @@ async function getSubCategories(id: string) {
   if (!result.ok) {
     throw new Error(result.statusText);
   }
-  const sub: DouYuSubCategory = []
+  let sub: DouYuSubCategory[] = []
   const data: { data: { total: number, list: [] }, error: number, message: string } = await result.json()
   data.data.list.forEach(item => {
     sub.push({
@@ -35,19 +36,53 @@ async function getSubCategories(id: string) {
   return sub
 }
 
-async function getCategoryRooms(category: DouYuSubCategory, page?: number,) {
-  const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_1/page=${page}`,)
+async function getCategoryRooms(subCategory: DouYuSubCategory, page = 1) {
+  const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_${subCategory.id}/page=${page}`,)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
-  const { data }: { data: { ct: any, rl: any, pgcnt: any } } = await result.json()
-  let item: any
-
+  const { data }: { data: DouYuListResult } = await result.json()
   data.rl = data.rl.filter((l: { type: number; }) => {
     return l.type == 1
   })
+  const roomItems = joinRooms(data)
+  const hasMore = page < data.pgcnt
+  return liveResult(hasMore, roomItems)
+}
+
+async function getRecommendRooms(page = 1) {
+  var result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
+  if (!result.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  const { data }: { data: DouYuListResult } = await result.json()
+  const roomItems = joinRooms(data)
+  let hasMore = page < data.pgcnt
+  generateRandomHexString(32)
+  return liveResult(hasMore, roomItems)
+}
+
+async function searchRooms(keyword: string, page = 1) {
+  const did = generateRandomHexString(32)
+  const result = await fetch(`/dyu/japi/search/api/searchShow?kw=${keyword}&page=${page}&pageSize=20`, {})
+
+
+  if (!result.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  const data = await result.json()
+  if (data.error !== 0) {
+    console.log(data.msg);
+    return
+  }
+}
+
+function joinRooms(list: DouYuListResult) {
+  list.rl = list.rl.filter((l: { type: number; }) => {
+    return l.type == 1
+  })
   const roomItem: DouYuLiveRoom = []
-  data.rl.forEach((l: { [x: string]: any; }) => {
+  list.rl.forEach((l: { [x: string]: any; }) => {
     roomItem.push({
       cover: l['rs16'],
       online: l['ol'],
@@ -59,4 +94,14 @@ async function getCategoryRooms(category: DouYuSubCategory, page?: number,) {
   return roomItem
 }
 
-export { getSubCategories, getCategores, getCategoryRooms }
+function generateRandomHexString(length: number) {
+  const hexCharacters = "0123456789abcdef";
+  const randomHexArray = Array(length).fill("");
+  for (let i = 0; i < length; i++) {
+    randomHexArray[i] = hexCharacters[Math.floor(Math.random() * 16)];
+  }
+  return randomHexArray.join("");
+}
+
+
+export { getCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms }
