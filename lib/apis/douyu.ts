@@ -1,5 +1,5 @@
-import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, DouYuSearchRoomResult } from "../types/apis";
-import { liveResult } from "../LiveResult";
+import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, DouYuLiveRoomDetail } from "../types/apis";
+import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
 
 function getCategores() {
   const LiveCategory: DouYuLiveCategory = [
@@ -51,21 +51,19 @@ async function getCategoryRooms(subCategory: DouYuSubCategory, page = 1) {
 }
 
 async function getRecommendRooms(page = 1) {
-  var result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
+  const result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
   const { data }: { data: DouYuListResult } = await result.json()
   const roomItems = joinRooms(data)
   let hasMore = page < data.pgcnt
-  generateRandomHexString(32)
   return liveResult(hasMore, roomItems)
 }
 
 async function searchRooms(keyword: string, page = 1) {
   const did = generateRandomHexString(32)
   const result = await fetch(`/dyu/japi/search/api/searchShow?kw=${keyword}&page=${page}&pageSize=20`, {})
-
 
   if (!result.ok) {
     throw new Error('Failed to fetch data')
@@ -75,7 +73,97 @@ async function searchRooms(keyword: string, page = 1) {
     console.log(data.msg);
     return
   }
+  const roomItems: DouYuLiveRoom = []
+  data.data.relateShow.forEach((l: { [x: string]: any; }) => {
+    roomItems.push({
+      roomId: l['rid'],
+      title: l['roomName'],
+      userName: l['nickName'],
+      cover: l['roomSrc'],
+      online: l['hot'],
+    })
+  });
+  let hasMore = data.data.relateShow.length !== 0
+  return liveResult(hasMore, roomItems)
 }
+
+async function searchAnchors(keyword: string, page = 1) {
+  const result = await fetch(`/dyu/japi/search/api/searchUser?kw=${keyword}&page=${page}&pageSize=20&filterType=1`)
+  const data = await result.json()
+  if (data.error !== 0) {
+    console.log(data.msg);
+    return
+  }
+  const anchorItems: DouYuSearchAnchorResult[] = []
+  data.data.relateUser.forEach((anchor: DouYuAnchorInfo) => {
+    anchorItems.push({
+      roomId: anchor.anchorInfo.rid,
+      avatar: anchor.anchorInfo.avatar,
+      userName: anchor.anchorInfo.nickName,
+      liveStatus: anchor.anchorInfo.isLive
+    })
+  });
+  let hasMore = data.data.relateUser.length !== 0
+  return LiveSearchAnchorResult(hasMore, anchorItems)
+}
+
+async function getRoomDetail(roomId: string) {
+  const result = await fetch(`/mdyu/${roomId}/index.pageContext.json`)
+  const data = await result.json()
+  let roomInfo = data.pageProps.room.roomInfo.roomInfo
+  const jsEncResult = await fetch(`/dyu/swf_api/homeH5Enc?rids=${roomId}`)
+  let encodeData = await jsEncResult.json()
+  let crptext = encodeData.data[`room${roomId}`]
+  const args = await getPlayArgs(crptext, roomId)
+
+  let liveRoomDetail: DouYuLiveRoomDetail = {
+    roomId: roomInfo.rid,
+    title: roomInfo.roomName,
+    userName: roomInfo.nickname,
+    userAvatar: roomInfo.avatar,
+    cover: roomInfo.roomSrc,
+    online: roomInfo.hn,
+    introduction: "",
+    notice: roomInfo.notice,
+    status: roomInfo.isLive,
+    danmakuData: roomInfo.rid,
+    url: `https://www.douyu.com/${roomId}`,
+    data: args,
+  }
+  console.log(liveRoomDetail);
+
+  return liveRoomDetail
+}
+
+async function getPlayArgs(html: string, rid: string) {
+  let h = replaceEval(extractFunction(html))
+  let d = { html: h, rid: rid }
+  const result = await fetch('/adyu/api/AllLive/DouyuSign', {
+    method: 'POST',
+    body: JSON.stringify(d),
+    headers: {
+      'content-type': 'application/json'
+    }
+  })
+  const data = await result.json()
+  if (data.code === 0) {
+    return data.data
+  }
+  return ''
+}
+
+async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
+  let data = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
+  let qualities = []
+  const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
+    method: 'POST',
+    body: data,
+  })
+  let a = result.json()
+  console.log(a);
+
+}
+
 
 function joinRooms(list: DouYuListResult) {
   list.rl = list.rl.filter((l: { type: number; }) => {
@@ -84,11 +172,11 @@ function joinRooms(list: DouYuListResult) {
   const roomItem: DouYuLiveRoom = []
   list.rl.forEach((l: { [x: string]: any; }) => {
     roomItem.push({
-      cover: l['rs16'],
-      online: l['ol'],
       roomId: l['rid'],
       title: l['rn'],
       userName: l['nn'],
+      cover: l['rs16'],
+      online: l['ol'],
     })
   });
   return roomItem
@@ -102,6 +190,15 @@ function generateRandomHexString(length: number) {
   }
   return randomHexArray.join("");
 }
+function extractFunction(html: string) {
+  const pattern = /(vdwdae325w_64we[\s\S]*function ub98484234[\s\S]*?)function/g;
+  const match = pattern.exec(html);
+  return match && match[1] || "";
+}
+function replaceEval(html: string) {
+  const pattern = /eval.*?;/g;
+  return html.replace(pattern, "strc;");
+}
 
-
-export { getCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms }
+export { getCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms, searchAnchors }
+export { getRoomDetail, getPlayArgs, getPlayQualites }

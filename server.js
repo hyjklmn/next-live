@@ -16,6 +16,20 @@ const devProxy = {
             '^/dyu': ''
         },
         changeOrigin: true 
+    },
+    '/mdyu': {
+        target: 'https://m.douyu.com', 
+        pathRewrite: {
+            '^/mdyu': ''
+        },
+        changeOrigin: true 
+    },
+    '/adyu':{
+        target: 'http://alive.nsapps.cn',
+        pathRewrite: {
+            '^/adyu': ''
+        },
+        changeOrigin: true 
     }
 }
 
