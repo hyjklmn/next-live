@@ -70,7 +70,6 @@ async function searchRooms(keyword: string, page = 1) {
   }
   const data = await result.json()
   if (data.error !== 0) {
-    console.log(data.msg);
     return
   }
   const roomItems: DouYuLiveRoom = []
@@ -91,7 +90,6 @@ async function searchAnchors(keyword: string, page = 1) {
   const result = await fetch(`/dyu/japi/search/api/searchUser?kw=${keyword}&page=${page}&pageSize=20&filterType=1`)
   const data = await result.json()
   if (data.error !== 0) {
-    console.log(data.msg);
     return
   }
   const anchorItems: DouYuSearchAnchorResult[] = []
@@ -130,6 +128,13 @@ async function getRoomDetail(roomId: string) {
     url: `https://www.douyu.com/${roomId}`,
     data: args,
   }
+  let a: { quality: string, data: string[] }[] = [
+    {
+      quality: "原画2K60",
+      data: ['scdncthelj', 'tct-h5', 'hs-h5']
+    }
+  ]
+  getPlayUrls(liveRoomDetail, a)
   return liveRoomDetail
 }
 
@@ -152,7 +157,6 @@ async function getPlayArgs(html: string, rid: string) {
 
 async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
   let params = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
-  let qualities = []
   const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
     method: 'POST',
     body: params,
@@ -161,10 +165,9 @@ async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
     }
   })
   const data = await result.json()
-  if (data.error !== 0) {
-    console.log(data.msg);
-    return
-  }
+
+  let qualities: { quality: string, data: any }[] = []
+
   let cdns: string[] = []
 
   for (let item in data.data.cdnsWithName) {
@@ -173,12 +176,38 @@ async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
   for (let item in data.data.multirates) {
     qualities.push({
       quality: data.data.multirates[item].name,
-      data: [data.data.multirates[item].rate, cdns]
+      data: {
+        rate: data.data.multirates[item].name,
+        cdns
+      }
     })
   }
   return qualities
 }
+async function getPlayUrl(roomId: string, args: string, rate: number, cdn: string) {
+  args += `&cdn=${cdn}&rate=${rate}`
+  const result = await fetch(`/dyu/lapi/live/getH5Play/${roomId}`, {
+    method: 'POST',
+    body: args,
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    }
+  })
+  const data = await result.json()
+  const url = `${data.data.rtmp_url}/${data.data.rtmp_live}`
+  return url
+}
 
+async function getPlayUrls(roomDetail: DouYuLiveRoomDetail, quality: { quality: string, data: any }[]) {
+  const args = roomDetail.data
+  const data = quality[0]
+  const urls: string[] = []
+  data.data.forEach(async (cdn: string) => {
+    let url = await getPlayUrl(roomDetail.roomId, args, 1, cdn)
+    urls.push(url)
+  })
+  return urls
+}
 
 function joinRooms(list: DouYuListResult) {
   list.rl = list.rl.filter((l: { type: number; }) => {
