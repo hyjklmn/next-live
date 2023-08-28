@@ -64,6 +64,7 @@ async function getRecommendRooms(page = 1) {
 async function searchRooms(keyword: string, page = 1) {
   const did = generateRandomHexString(32)
   const result = await fetch(`/dyu/japi/search/api/searchShow?kw=${keyword}&page=${page}&pageSize=20`, {})
+  console.log(did);
 
   if (!result.ok) {
     throw new Error('Failed to fetch data')
@@ -134,8 +135,8 @@ async function getRoomDetail(roomId: string) {
       data: ['scdncthelj', 'tct-h5', 'hs-h5']
     }
   ]
-  getPlayUrls(liveRoomDetail, a)
-  return liveRoomDetail
+  let ab = await getPlayUrls(liveRoomDetail, a)
+  return { liveRoomDetail, ab }
 }
 
 async function getPlayArgs(html: string, rid: string) {
@@ -200,6 +201,7 @@ async function getPlayUrl(roomId: string, args: string, rate: number, cdn: strin
 
 async function getPlayUrls(roomDetail: DouYuLiveRoomDetail, quality: { quality: string, data: any }[]) {
   const args = roomDetail.data
+
   const data = quality[0]
   const urls: string[] = []
   data.data.forEach(async (cdn: string) => {
@@ -245,4 +247,4 @@ function replaceEval(html: string) {
 }
 
 export { getCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms, searchAnchors }
-export { getRoomDetail, getPlayArgs, getPlayQualites }
+export { getRoomDetail, getPlayArgs, getPlayQualites, getPlayUrls, getPlayUrl }
