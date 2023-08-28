@@ -130,8 +130,6 @@ async function getRoomDetail(roomId: string) {
     url: `https://www.douyu.com/${roomId}`,
     data: args,
   }
-  console.log(liveRoomDetail);
-
   return liveRoomDetail
 }
 
@@ -153,15 +151,32 @@ async function getPlayArgs(html: string, rid: string) {
 }
 
 async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
-  let data = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
+  let params = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
   let qualities = []
   const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
     method: 'POST',
-    body: data,
+    body: params,
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    }
   })
-  let a = result.json()
-  console.log(a);
+  const data = await result.json()
+  if (data.error !== 0) {
+    console.log(data.msg);
+    return
+  }
+  let cdns: string[] = []
 
+  for (let item in data.data.cdnsWithName) {
+    cdns.push(data.data.cdnsWithName[item].cdn)
+  }
+  for (let item in data.data.multirates) {
+    qualities.push({
+      quality: data.data.multirates[item].name,
+      data: [data.data.multirates[item].rate, cdns]
+    })
+  }
+  return qualities
 }
 
 

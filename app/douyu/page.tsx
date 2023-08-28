@@ -5,7 +5,11 @@ import { getRoomDetail, getPlayQualites } from '@/lib/apis/douyu'
 export default function Page() {
 
   useEffect(() => {
-    getRoomDetail('99999')
+    (async function () {
+      const data = await getRoomDetail('71415')
+      getPlayQualites(data)
+    })()
+
   }, [])
 
   const [recommendList, setRecommendList] = useState<any>([])
