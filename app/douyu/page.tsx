@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from 'react'
 import RoomCard from '@/components/RoomCard'
 import { getRoomDetail, getPlayQualites } from '@/lib/apis/douyu'
+import DouYuDanmaku from '@/lib/danmaku/douyu/douyu'
 export default function Page() {
-
+  // new DouYuDanmaku().start('5324055')
   useEffect(() => {
-    getRoomDetail('71415')
+    // getRoomDetail('5324055')
   }, [])
 
   const [recommendList, setRecommendList] = useState<any>([])

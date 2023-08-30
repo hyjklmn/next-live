@@ -1,15 +1,37 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import flvjs from 'flv.js';
 import Hls from 'hls.js';
+import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import Artplayer from './player';
 import { getRoomDetail, searchRooms } from '@/lib/apis/douyu';
+import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 
+// new DouYuDanmaku().start('5324055')
 function LivePlayer() {
+  const a = useRef() as any
+  useEffect(() => {
+    const DOUYUDANMU = new DouYuDanmaku()
+    DOUYUDANMU.start('5324055')
+    DOUYUDANMU.onMessage = (msg) => {
+      console.log(msg);
+
+      if (a.current) {
+        a.current.plugins.artplayerPluginDanmuku.emit({
+          text: msg.message,
+          color: msg.color.toString(),
+          border: false,
+        });
+
+      }
+    }
+  }, [])
   const [recommendList, setRecommendList] = useState<any>([])
+  const douyu = new DouYuDanmaku
+  console.log(douyu.getColor(1));
 
   useEffect(() => {
-    getRoomDetail('1863767').then(res => {
+    getRoomDetail('5324055').then(res => {
       console.log(res.ab);
       setRecommendList((recommendList: any) => {
         return res.ab
@@ -53,15 +75,41 @@ function LivePlayer() {
     <div className='w-full h-full'>
       <Artplayer
         option={{
-          url: "https://stream-heilongjiang-ct-112-102-64-228.edgesrv.com:8443/live/1863767rkpl2_900p.flv?wsAuth=ce96cf4121d32e2acdcbad27674dcfa5&token=web-h5-0-1863767-7b520f6fe0a2b18d8e1844d8a6cf9c696b99ccb62ac99ba7&logo=0&expire=0&did=10000000000000000000000000001501&pt=2&st=0&sid=332376375&vhost=play2&origin=tct&mix=0&isp=scdncthelj",
+          url: "https://huos3a.douyucdn2.cn/live/5324055rDTWzzYRA_900.flv?wsAuth=cb0c5863045227d0213e39407527dfa8&token=web-h5-0-5324055-8d9aa97d7a69b17f2ac1f2fcd3f952ce47029a86f29f2d94&logo=0&expire=0&did=10000000000000000000000000001501&pt=2&st=0&sid=361337475&origin=tct&mix=0&isp=",
           customType: {
             flv: flvFunc,
           },
-
           type: 'flv',
-          isLive: true
+          isLive: true,
+          plugins: [
+            artplayerPluginDanmuku({
+              danmuku: [
+                {
+                  text: '111', // 弹幕文本
+                  time: 1, // 发送时间，单位秒
+                  color: '#fff', // 弹幕局部颜色
+                  border: false, // 是否显示描边
+                  mode: 0, // 弹幕模式: 0表示滚动, 1静止
+                },
+                {
+                  text: '222',
+                  time: 2,
+                  color: 'red',
+                  border: true,
+                  mode: 0,
+                },
+                {
+                  text: '333',
+                  time: 3,
+                  color: 'green',
+                  border: false,
+                  mode: 1,
+                },
+              ],
+            })
+          ]
         }}
-        getInstance
+        getInstance={(art: any) => a.current = art}
       />
     </div>
   );

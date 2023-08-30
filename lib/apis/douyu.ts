@@ -131,11 +131,13 @@ async function getRoomDetail(roomId: string) {
   }
   let a: { quality: string, data: string[] }[] = [
     {
-      quality: "原画2K60",
+      quality: "原画1080P60",
       data: ['scdncthelj', 'tct-h5', 'hs-h5']
     }
   ]
   let ab = await getPlayUrls(liveRoomDetail, a)
+  console.log(ab);
+
   return { liveRoomDetail, ab }
 }
 
