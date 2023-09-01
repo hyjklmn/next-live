@@ -39,7 +39,7 @@ export default function Categories() {
         <nav className="flex items-center space-x-3 md:space-x-6 p-2 border-2 rounded-full bg-background">
           {
             category.map(cate => {
-              return <span onClick={() => changeCate(cate.id)} key={cate.id} className={`${currentCate.current === cate.id ? 'text-current' : ''} cursor-pointer transition-colors hover:text-foreground text-foreground/60`}>{cate.name}</span>
+              return <span onClick={() => changeCate(cate.id)} key={cate.id} className={`${currentCate.current == cate.id ? 'text-lime-500' : ''} cursor-pointer transition-colors hover:text-lime-500 text-foreground/60`}>{cate.name}</span>
             })
           }
         </nav>
@@ -48,7 +48,7 @@ export default function Categories() {
         {
           subCategory.map(sub => {
             return (
-              <div key={sub.id} className='border-2 text-center rounded-lg p-3'>
+              <div key={sub.id} className='border text-center rounded-lg p-3  hover:scale-105 hover:border-gray-600 hover:shadow-sm transition-all'>
                 <figure className='min-h-[100px]'>
                   <Image loader={imageLoader} src={sub.pic}
                     priority
@@ -57,7 +57,9 @@ export default function Categories() {
                     height="0"
                     className="w-full h-auto" alt={sub.name}></Image>
                 </figure>
-                {sub.name}
+                <span>
+                  {sub.name}
+                </span>
               </div>)
           })
         }
