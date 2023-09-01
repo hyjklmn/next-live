@@ -31,14 +31,7 @@ function LivePlayer() {
   console.log(douyu.getColor(1));
 
   useEffect(() => {
-    getRoomDetail('5324055').then(res => {
-      console.log(res.ab);
-      setRecommendList((recommendList: any) => {
-        return res.ab
-      })
 
-    })
-    searchRooms('大硕')
   }, [])
 
   function flvFunc(video: HTMLMediaElement, url: any, art: { flv: flvjs.Player; on: (arg0: string, arg1: () => void) => void; notice: { show: string; }; }) {

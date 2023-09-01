@@ -2,6 +2,7 @@ import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, Do
 import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
 
 function getCategores() {
+
   const LiveCategory: DouYuLiveCategory = [
     { id: "PCgame", name: "网游竞技", children: [] },
     { id: "djry", name: "单机热游", children: [] },
@@ -11,10 +12,10 @@ function getCategores() {
     { id: "kjwh", name: "科技文化", children: [] },
     { id: "yp", name: "语言互动", children: [] },
   ];
-  LiveCategory.forEach(async live => {
-    const item = await getSubCategories(live.id)
-    live.children = live.children.concat(item)
-  })
+  // LiveCategory.forEach(async live => {
+  //   const item = await getSubCategories(live.id)
+  //   live.children = live.children.concat(item)
+  // })
   return LiveCategory
 }
 
@@ -129,16 +130,8 @@ async function getRoomDetail(roomId: string) {
     url: `https://www.douyu.com/${roomId}`,
     data: args,
   }
-  let a: { quality: string, data: string[] }[] = [
-    {
-      quality: "原画1080P60",
-      data: ['scdncthelj', 'tct-h5', 'hs-h5']
-    }
-  ]
-  let ab = await getPlayUrls(liveRoomDetail, a)
-  console.log(ab);
 
-  return { liveRoomDetail, ab }
+  return liveRoomDetail
 }
 
 async function getPlayArgs(html: string, rid: string) {
