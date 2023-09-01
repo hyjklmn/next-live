@@ -1,7 +1,6 @@
 'use client'
 import { useCallback } from 'react'
 import Link from 'next/link'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
 import Search from './Search'
 import Hamburg from './Hamburg'
 import { NavLinks } from '@/lib/NavLinks'
@@ -9,7 +8,14 @@ import { usePathname } from 'next/navigation'
 import { motion, useMotionTemplate, useMotionValue } from 'framer-motion'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from "@/components/ui/button"
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 function NavItem({ href, children, }: {
@@ -60,11 +66,11 @@ export default function Header() {
 
   return (
     <div className='sticky top-0 left-0 z-10 h-14 bg-inherit w-screen px-2 shadow-gray-500 shadow-sm'>
-      <div className="flex h-full gap-2 items-center">
+      <div className="flex h-full items-center">
         <div className="flex px-2 lg:flex-none">
           <a className="text-lg font-bold">Lorem</a>
         </div>
-        <div className="hidden md:flex flex-1 justify-end gap-2">
+        <div className="max-sm:hidden flex flex-1 justify-end gap-2">
           <nav
             onMouseMove={handleMouseMove}
             className="group relative rounded-full bg-gradient-to-b from-zinc-50/70 to-white/90 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur-md dark:from-zinc-900/70 dark:to-zinc-800/90 dark:ring-zinc-100/10 [--spotlight-color:rgb(236_252_203_/_0.6)] dark:[--spotlight-color:rgb(217_249_157_/_0.07)]
@@ -86,31 +92,23 @@ export default function Header() {
           </nav>
         </div>
 
-        <div className="hidden md:flex flex-1 justify-end">
-          <div className="flex items-center">
+        <div className="max-sm:hidden flex flex-1 justify-end">
+          <div className="flex items-center gap-3">
             <Search />
             <ModeToggle />
-            {
-              !isLogin ?
-                <div className='mx-3'>
-                  <Button variant="ghost" className="btn btn-sm">登录</Button>
-                </div> : <div>
-                  <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">关注列表</label>
-                    <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-                      <li><a>Item 1</a></li>
-                      <li><a>Item 2</a></li>
-                    </ul>
-                  </div>
-                  <details className="dropdown dropdown-end">
-                    <summary tabIndex={0} className="btn btn-ghost rounded-btn btn-sm">8588 <ChevronDownIcon /></summary>
-                    <ul tabIndex={0} className="menu dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 mt-4">
-                      <li><a>Item 1</a></li>
-                      <li><a>Item 2</a></li>
-                    </ul>
-                  </details>
-                </div>
-            }
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Button variant="outline">关注</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Profile</DropdownMenuItem>
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <Hamburg />

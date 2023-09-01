@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 // import React from 'react'
 export default function Search() {
   return (
-    <div className="flex items-center space-x-2 mr-3">
+    <div className="flex items-center space-x-2">
       <Input type="text" placeholder="Email" />
       <Button size="icon" variant="outline" className="rounded-full shrink-0">
         <MagnifyingGlassIcon />
