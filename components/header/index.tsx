@@ -97,7 +97,7 @@ export default function Header() {
             <Search />
             <ModeToggle />
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild>
                 <Button variant="outline">关注</Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
