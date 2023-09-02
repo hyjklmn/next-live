@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState, useRef } from 'react';
 import Image, { ImageLoaderProps } from 'next/image'
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { getCategores, getSubCategories } from '@/lib/apis/douyu'
 import { DouYuLiveCategory, DouYuSubCategory } from '@/lib/types/apis';
 import Link from 'next/link';
@@ -36,7 +36,6 @@ export default function Categories() {
   const imageLoader = ({ src }: ImageLoaderProps) => {
     return `${src}`
   }
-
   return (
     <>
       <div className="flex justify-center sticky top-1 left-0 my-2 text-sm md:text-base font-medium m-auto z-10">

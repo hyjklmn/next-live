@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
 import RoomCard from '@/components/RoomCard'
+import Link from 'next/link'
 export default function Page() {
   const [recommendList, setRecommendList] = useState<any>([])
   async function asd() {
@@ -19,6 +20,7 @@ export default function Page() {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 place-items-center">
         {<RoomCard list={recommendList} />}
       </div>
+      <Link href='/douyu/categories'>categories</Link>
     </>
   )
 }
