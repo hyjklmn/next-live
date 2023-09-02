@@ -5,7 +5,7 @@ type DouYuLiveCategory = {
 }[]
 type DouYuSubCategory = {
   pic: string
-  id: string
+  id: strin | number
   parentId: string
   name: string
 }

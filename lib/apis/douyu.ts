@@ -1,7 +1,7 @@
 import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, DouYuLiveRoomDetail } from "../types/apis";
 import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
 
-function getCategores() {
+function getCategores(): DouYuLiveCategory {
 
   const LiveCategory: DouYuLiveCategory = [
     { id: "PCgame", name: "网游竞技", children: [] },
@@ -37,8 +37,8 @@ async function getSubCategories(id: string) {
   return sub
 }
 
-async function getCategoryRooms(subCategory: DouYuSubCategory, page = 1) {
-  const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_${subCategory.id}/page=${page}`,)
+async function getCategoryRooms(subId: DouYuSubCategory['id'], page = 1) {
+  const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_${subId}/page=${page}`,)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
