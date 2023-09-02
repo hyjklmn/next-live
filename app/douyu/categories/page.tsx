@@ -36,6 +36,7 @@ export default function Categories() {
   const imageLoader = ({ src }: ImageLoaderProps) => {
     return `${src}`
   }
+
   return (
     <>
       <div className="flex justify-center sticky top-1 left-0 my-2 text-sm md:text-base font-medium m-auto z-10">
