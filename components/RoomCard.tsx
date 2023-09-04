@@ -1,6 +1,8 @@
 import React from 'react'
+import { useRouter } from 'next/navigation'
 import Image, { ImageLoaderProps } from 'next/image'
-import { platFormNameConvert, onlineConvert } from '@/lib/Platforms'
+import { Flame } from 'lucide-react'
+
 import {
   Card,
   CardContent,
@@ -14,6 +16,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
+import { onlineConvert } from '@/lib/Platforms'
 
 function AnchorAvatar(props: any) {
   return (
@@ -29,38 +32,43 @@ function AnchorAvatar(props: any) {
 
 
 export default function RoomCard(props: { list: Array<Object>, }) {
-  const imageLoader = ({ src }: ImageLoaderProps) => {
-    return `${src}`
+  const router = useRouter()
+  const imageLoader = ({ src, width }: ImageLoaderProps) => {
+    return `${src}?w=${width}`
   }
+
+  function toPlayer(rid: string) {
+    console.log(rid);
+    router.push(`/player/?rid=${rid}`)
+  }
+
   return (
-    <>
+    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
       {
         props.list.map((room: any, index) => {
           return (
-            <Card key={index}>
-              <CardHeader className='p-0'>
+            <Card key={index} className='overflow-hidden cursor-pointer' onClick={() => toPlayer(room.roomId)}>
+              <CardHeader className='p-0 pb-2'>
                 <CardTitle>
-                  <figure className='min-h-[180px]'>
-                    <Image loader={imageLoader} src={room.roomPic}
+                  <figure className='relative min-h-[100px]'>
+                    <Image loader={imageLoader} src={room.cover}
                       priority
-                      unoptimized
-                      width="0"
-                      height="0"
-                      className="w-80 h-auto" alt={room.ownerName}></Image>
+                      width='0'
+                      height='0'
+                      className="min-w-full h-full"
+                      alt={room.userName} />
+                    <div className='flex items-center absolute bottom-0 right-0 text-sm text-secondary rounded font-medium bg-primary/75'>
+                      <Flame size={16} /> {onlineConvert(room.online)}
+                    </div>
                   </figure>
                 </CardTitle>
-                <CardDescription className='p-1 px-2'>{room.roomName}</CardDescription>
+                <CardDescription className='p-1 px-2 truncate select-none text-base' title={room.title}>
+                  <span className='text-primary font-semibold'>{room.userName}</span>
+                  ：{room.title}</CardDescription>
               </CardHeader>
-              <CardContent className='p-1 px-2'>
-                <AnchorAvatar {...room} />
-              </CardContent>
-              <CardFooter className='p-1 px-2 flex justify-between'>
-                <p>{platFormNameConvert(room.platForm)}</p>
-                <p>{onlineConvert(room.online)}</p>
-              </CardFooter>
             </Card>
           )
         })}
-    </>
+    </div>
   )
 }

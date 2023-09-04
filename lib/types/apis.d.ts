@@ -18,7 +18,10 @@ type DouYuLiveRoom = {
   userName: string,
 }[]
 
-
+interface LiveResult {
+  hasMore: boolean
+  roomItems: DouYuLiveRoom
+}
 
 interface DouYuLiveRoomDetail {
   roomId: string
@@ -53,4 +56,4 @@ interface DouYuSearchAnchorResult {
   userName: string
   liveStatus: string //1直播,2没直播
 }
-export { DouYuLiveCategory, DouYuSubCategory, DouYuLiveRoom, DouYuListResult, DouYuLiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo }
+export { DouYuLiveCategory, DouYuSubCategory, DouYuLiveRoom, DouYuListResult, DouYuLiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }
