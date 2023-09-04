@@ -107,7 +107,7 @@ async function searchAnchors(keyword: string, page = 1) {
   return LiveSearchAnchorResult(hasMore, anchorItems)
 }
 
-async function getRoomDetail(roomId: string) {
+async function getRoomDetail(roomId: string): Promise<DouYuLiveRoomDetail> {
   const result = await fetch(`/mdyu/${roomId}/index.pageContext.json`)
   const data = await result.json()
   let roomInfo = data.pageProps.room.roomInfo.roomInfo
@@ -130,13 +130,13 @@ async function getRoomDetail(roomId: string) {
     url: `https://www.douyu.com/${roomId}`,
     data: args,
   }
-
   return liveRoomDetail
 }
 
 async function getPlayArgs(html: string, rid: string) {
   let h = replaceEval(extractFunction(html))
   let d = { html: h, rid: rid }
+
   const result = await fetch('/adyu/api/AllLive/DouyuSign', {
     method: 'POST',
     body: JSON.stringify(d),
@@ -173,7 +173,7 @@ async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
     qualities.push({
       quality: data.data.multirates[item].name,
       data: {
-        rate: data.data.multirates[item].name,
+        rate: data.data.multirates[item].rate,
         cdns
       }
     })
@@ -194,14 +194,14 @@ async function getPlayUrl(roomId: string, args: string, rate: number, cdn: strin
   return url
 }
 
-async function getPlayUrls(roomDetail: DouYuLiveRoomDetail, quality: { quality: string, data: any }[]) {
+async function getPlayUrls(roomDetail: DouYuLiveRoomDetail, qualities: { quality: string, data: any }[]) {
   const args = roomDetail.data
-
-  const data = quality[0]
   const urls: string[] = []
-  data.data.forEach(async (cdn: string) => {
-    let url = await getPlayUrl(roomDetail.roomId, args, 1, cdn)
-    urls.push(url)
+  qualities.forEach((quality: any) => {
+    quality.data.cdns.forEach(async (cdn: string) => {
+      let url = await getPlayUrl(roomDetail.roomId, args, quality.data.rate, cdn)
+      urls.push(url)
+    })
   })
   return urls
 }

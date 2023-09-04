@@ -38,7 +38,6 @@ export default function RoomCard(props: { list: Array<Object>, }) {
   }
 
   function toPlayer(rid: string) {
-    console.log(rid);
     router.push(`/player/?rid=${rid}`)
   }
 
@@ -50,7 +49,7 @@ export default function RoomCard(props: { list: Array<Object>, }) {
             <Card key={index} className='overflow-hidden cursor-pointer' onClick={() => toPlayer(room.roomId)}>
               <CardHeader className='p-0 pb-2'>
                 <CardTitle>
-                  <figure className='relative min-h-[100px]'>
+                  <figure className='relative min-h-[150px]'>
                     <Image loader={imageLoader} src={room.cover}
                       priority
                       width='0'

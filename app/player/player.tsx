@@ -1,9 +1,10 @@
-import { useEffect, useRef } from 'react';
+'use client'
+import { useEffect, useRef, useState } from 'react';
 import Artplayer from 'artplayer';
+
 
 export default function Player({ option, getInstance, ...rest }: { option: any, getInstance: any }) {
   const artRef = useRef(null);
-
   useEffect(() => {
     const art = new Artplayer({
       ...option,

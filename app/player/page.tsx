@@ -1,38 +1,68 @@
 'use client'
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import flvjs from 'flv.js';
 import Hls from 'hls.js';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import Artplayer from './player';
-import { getRoomDetail, searchRooms } from '@/lib/apis/douyu';
-import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
+
+import { useSearchParams } from 'next/navigation';
+import { getPlayQualites, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
+import { DouYuLiveRoomDetail } from '@/lib/types/apis';
 
 // new DouYuDanmaku().start('5324055')
-function LivePlayer() {
+export default function LivePlayer() {
+
   const a = useRef() as any
+  const query = useSearchParams()
+  const rid = query.get('rid') as string
+  const [roomDetail, setRoomDetail] = useState<DouYuLiveRoomDetail>()
+  const [qualities, setQualities] = useState<{
+    quality: string;
+    data: any;
+  }[]>()
+  const [urls, setUrls] = useState<string[]>([])
+
+  async function rd() {
+    const details = await getRoomDetail(rid)
+    const quality = await getPlayQualites(details)
+    // const cdns = await getPlayUrls(details, quality)
+
+
+    setRoomDetail(details)
+    // setQualities(quality)
+    // setUrls(cdns)
+    // console.log(urls);
+    // console.log(cdns);
+
+
+  }
+
   useEffect(() => {
-    const DOUYUDANMU = new DouYuDanmaku()
-    DOUYUDANMU.start('5324055')
-    DOUYUDANMU.onMessage = (msg) => {
-      console.log(msg);
+    rd()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rid])
 
-      if (a.current) {
-        a.current.plugins.artplayerPluginDanmuku.emit({
-          text: msg.message,
-          color: msg.color.toString(),
-          border: false,
-        });
+  // useEffect(() => {
+  //   const DOUYUDANMU = new DouYuDanmaku()
+  //   DOUYUDANMU.start('5324055')
+  //   DOUYUDANMU.onMessage = (msg) => {
+  //     console.log(msg);
 
-      }
-    }
-  }, [])
-  const [recommendList, setRecommendList] = useState<any>([])
-  const douyu = new DouYuDanmaku
-  console.log(douyu.getColor(1));
+  //     if (a.current) {
+  //       a.current.plugins.artplayerPluginDanmuku.emit({
+  //         text: msg.message,
+  //         color: msg.color.toString(),
+  //         border: false,
+  //       });
 
-  useEffect(() => {
+  //     }
+  //   }
+  // }, [])
+  // const [recommendList, setRecommendList] = useState<any>([])
+  // const douyu = new DouYuDanmaku
+  // useEffect(() => {
 
-  }, [])
+  // }, [])
 
   function flvFunc(video: HTMLMediaElement, url: any, art: { flv: flvjs.Player; on: (arg0: string, arg1: () => void) => void; notice: { show: string; }; }) {
     console.log(video);
@@ -66,9 +96,13 @@ function LivePlayer() {
   // }
   return (
     <div className='w-full h-full'>
-      <Artplayer
+      {urls?.map((r, i) => {
+        return <li key={i}>{r}</li>
+      })}
+      {roomDetail?.userName}
+      {/* <Artplayer
         option={{
-          url: "https://huos3a.douyucdn2.cn/live/5324055rDTWzzYRA_900.flv?wsAuth=cb0c5863045227d0213e39407527dfa8&token=web-h5-0-5324055-8d9aa97d7a69b17f2ac1f2fcd3f952ce47029a86f29f2d94&logo=0&expire=0&did=10000000000000000000000000001501&pt=2&st=0&sid=361337475&origin=tct&mix=0&isp=",
+          url: '',
           customType: {
             flv: flvFunc,
           },
@@ -103,9 +137,8 @@ function LivePlayer() {
           ]
         }}
         getInstance={(art: any) => a.current = art}
-      />
+      /> */}
     </div>
   );
 }
 
-export default LivePlayer;
