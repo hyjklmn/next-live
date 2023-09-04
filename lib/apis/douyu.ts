@@ -151,7 +151,7 @@ async function getPlayArgs(html: string, rid: string) {
   return ''
 }
 
-async function getPlayQualites(roomDetail: DouYuLiveRoomDetail) {
+async function getPlayQualities(roomDetail: DouYuLiveRoomDetail) {
   let params = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
   const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
     method: 'POST',
@@ -242,4 +242,4 @@ function replaceEval(html: string) {
 }
 
 export { getCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms, searchAnchors }
-export { getRoomDetail, getPlayArgs, getPlayQualites, getPlayUrls, getPlayUrl }
+export { getRoomDetail, getPlayArgs, getPlayQualities, getPlayUrls, getPlayUrl }
