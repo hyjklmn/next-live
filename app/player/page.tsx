@@ -1,71 +1,23 @@
 'use client'
-import { useEffect, useState, useRef } from 'react';
-import flvjs from 'flv.js';
-import Hls from 'hls.js';
-import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
-import Artplayer from './player';
-
+import React, { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation';
-import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { DouYuLiveRoomDetail } from '@/lib/types/apis';
+import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
+import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 
-// new DouYuDanmaku().start('5324055')
-export default function LivePlayer() {
-
-  const a = useRef() as any
+import Artplayer from 'artplayer';
+import flvjs from 'flv.js';
+import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
+export default function Page() {
   const query = useSearchParams()
   const rid = query.get('rid') as string
   const [roomDetail, setRoomDetail] = useState<DouYuLiveRoomDetail>()
-  const [qualities, setQualities] = useState<{
-    quality: string;
-    data: any;
-  }[]>()
+  const [qualities, setQualities] = useState<{ quality: string; data: any; }[]>([])
   const [urls, setUrls] = useState<string[]>([])
-
-  async function rd() {
-    const details = await getRoomDetail(rid)
-    const quality = await getPlayQualities(details)
-    // const cdns = await getPlayUrls(details, quality)
-
-
-    setRoomDetail(details)
-    // setQualities(quality)
-    // setUrls(cdns)
-    // console.log(urls);
-    // console.log(cdns);
-
-
-  }
-
-  useEffect(() => {
-    rd()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rid])
-
-  // useEffect(() => {
-  //   const DOUYUDANMU = new DouYuDanmaku()
-  //   DOUYUDANMU.start('5324055')
-  //   DOUYUDANMU.onMessage = (msg) => {
-  //     console.log(msg);
-
-  //     if (a.current) {
-  //       a.current.plugins.artplayerPluginDanmuku.emit({
-  //         text: msg.message,
-  //         color: msg.color.toString(),
-  //         border: false,
-  //       });
-
-  //     }
-  //   }
-  // }, [])
-  // const [recommendList, setRecommendList] = useState<any>([])
-  // const douyu = new DouYuDanmaku
-  // useEffect(() => {
-
-  // }, [])
-
-  function flvFunc(video: HTMLMediaElement, url: any, art: { flv: flvjs.Player; on: (arg0: string, arg1: () => void) => void; notice: { show: string; }; }) {
-    console.log(video);
+  const artRef = useRef<any>()
+  const douyuDM = new DouYuDanmaku()
+  function flvFunc(video: HTMLMediaElement, url: string, art: any) {
+    console.log(url);
 
     if (flvjs.isSupported()) {
       if (art.flv) art.flv.destroy();
@@ -78,67 +30,83 @@ export default function LivePlayer() {
       art.notice.show = 'Unsupported playback format: flv';
     }
   }
-  // function playM3u8(video, url, art) {
-  //   console.log(video);
+  useEffect(() => {
 
-  //   if (Hls.isSupported()) {
-  //     if (art.hls) art.hls.destroy();
-  //     const hls = new Hls();
-  //     hls.loadSource(url);
-  //     hls.attachMedia(video);
-  //     art.hls = hls;
-  //     art.on('destroy', () => hls.destroy());
-  //   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-  //     video.src = url;
-  //   } else {
-  //     art.notice.show = 'Unsupported playback format: m3u8';
-  //   }
-  // }
-  return (
-    <div className='w-full h-full'>
-      {urls?.map((r, i) => {
-        return <li key={i}>{r}</li>
-      })}
-      {roomDetail?.userName}
-      {/* <Artplayer
-        option={{
-          url: '',
+    (async () => {
+      const details = await getRoomDetail(rid)
+      const quality = await getPlayQualities(details)
+      const cdns = await getPlayUrls(details, quality)
+      setTimeout(() => {
+        setRoomDetail(details)
+        let arr: { url: string, html: string, default?: boolean }[] = []
+        // setQualities(preState => [...preState, ...quality])
+        // setUrls(preState => [...preState, ...cdns])
+        for (let i = 0; i < cdns.length; i += 3) {
+          arr.push({
+            url: cdns[i],
+            html: ''
+          })
+        }
+        for (let k = 0; k < quality.length; k++) {
+          arr[k]['html'] = quality[k].quality
+        }
+        arr[0]['default'] = true
+        const options = {
+          container: '.artplayer-app',
+          url: arr[0].url,
+          autoplay: true,
+          quality: arr,
+          isLive: true,
+          type: 'flv',
           customType: {
             flv: flvFunc,
           },
-          type: 'flv',
-          isLive: true,
+          fullscreen: true,
           plugins: [
             artplayerPluginDanmuku({
-              danmuku: [
-                {
-                  text: '111', // 弹幕文本
-                  time: 1, // 发送时间，单位秒
-                  color: '#fff', // 弹幕局部颜色
-                  border: false, // 是否显示描边
-                  mode: 0, // 弹幕模式: 0表示滚动, 1静止
-                },
-                {
-                  text: '222',
-                  time: 2,
-                  color: 'red',
-                  border: true,
-                  mode: 0,
-                },
-                {
-                  text: '333',
-                  time: 3,
-                  color: 'green',
-                  border: false,
-                  mode: 1,
-                },
-              ],
+              danmuku: [],
+              speed: 10,
             })
           ]
-        }}
-        getInstance={(art: any) => a.current = art}
-      /> */}
-    </div>
-  );
-}
+        }
+        // const art = new Artplayer(options)
+        artRef.current = new Artplayer(options)
+        console.log(artRef.current);
 
+        artRef.current.on('ready', () => {
+          setTimeout(() => {
+            artRef.current.quality = arr;
+          }, 3000);
+        })
+        artRef.current.on('error', () => {
+          setTimeout(() => {
+            artRef.current.quality = arr;
+          }, 3000);
+        });
+        // 弹幕
+        douyuDM.start(rid)
+        douyuDM.onMessage = (msg) => {
+          if (artRef.current) {
+            artRef.current.plugins.artplayerPluginDanmuku.emit({
+              text: msg.message,
+              color: msg.color.toString(),
+              border: false,
+            });
+
+          }
+        }
+      }, 500);
+    })()
+
+    return () => {
+      if (artRef.current && artRef.current.destroy) {
+        artRef.current.destroy();
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return (
+    <div className='artplayer-app w-full h-full'></div>
+  )
+}
