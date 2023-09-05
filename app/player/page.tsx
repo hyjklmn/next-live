@@ -24,7 +24,7 @@ export default function LivePlayer() {
 
   async function rd() {
     const details = await getRoomDetail(rid)
-    const quality = await getPlayQualites(details)
+    const quality = await getPlayQualities(details)
     // const cdns = await getPlayUrls(details, quality)
 
 
