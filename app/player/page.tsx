@@ -6,7 +6,7 @@ import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import Artplayer from './player';
 
 import { useSearchParams } from 'next/navigation';
-import { getPlayQualites, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
+import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { DouYuLiveRoomDetail } from '@/lib/types/apis';
 
 // new DouYuDanmaku().start('5324055')
