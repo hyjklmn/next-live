@@ -30,6 +30,14 @@ const devProxy = {
             '^/adyu': ''
         },
         changeOrigin: true 
+    },
+    // huya
+    '/hy':{
+        target: 'https://www.huya.com/cache.php',
+        pathRewrite: {
+            '^/hy': ''
+        },
+        changeOrigin: true 
     }
 }
 
