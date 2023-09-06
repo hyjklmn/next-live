@@ -1,11 +1,28 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-export default function Page() {
+import RoomCard from '@/components/RoomCard'
+import { getRecommendRooms } from '@/lib/apis/douyu'
+import { LiveResult } from '@/lib/types/apis'
 
+export default function Page() {
+  const [recommend, setRecommend] = useState<LiveResult>({
+    hasMore: true,
+    roomItems: []
+  })
+  useEffect(() => {
+    (async function () {
+      const data = await getRecommendRooms()
+      setRecommend(data)
+
+    })()
+
+  }, [])
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 place-items-center">
-      <Link href='/douyu/categories'>categories</Link>
+    <div>
+      <Link href='/douyu/categories'>斗鱼 categories</Link>
+      <p className='text-center text-lg'>推荐</p>
+      <RoomCard list={recommend.roomItems} />
     </div>
   )
 }
