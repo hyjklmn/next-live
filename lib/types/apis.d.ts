@@ -16,6 +16,7 @@ type DouYuLiveRoom = {
   roomId: string,
   title: string,
   userName: string,
+  avatar?: string
 }[]
 
 interface LiveResult {

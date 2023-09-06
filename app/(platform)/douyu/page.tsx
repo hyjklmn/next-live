@@ -14,7 +14,6 @@ export default function Page() {
     (async function () {
       const data = await getRecommendRooms()
       setRecommend(data)
-
     })()
 
   }, [])

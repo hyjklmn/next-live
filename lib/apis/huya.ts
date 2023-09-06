@@ -8,7 +8,9 @@ async function getRecommendRooms(page = 1) {
   const data = await result.json()
 
   const roomItems: DouYuLiveRoom = [];
-  data.data.datas.forEach((item: { screenshot: string; introduction: string; roomName: string; profileRoom: string; nick: string; totalCount: string; }) => {
+  data.data.datas.forEach((item: {
+    avatar180: string; screenshot: string; introduction: string; roomName: string; profileRoom: string; nick: string; totalCount: string;
+  }) => {
     let cover = item.screenshot
     // if (cover.indexOf('?') === -1) {
     //   cover += "?x-oss-process=style/w338_h190&"
@@ -23,6 +25,7 @@ async function getRecommendRooms(page = 1) {
       cover: cover,
       userName: item.nick,
       online: item.totalCount,
+      avatar: item.avatar180
     })
   })
   const hasMore = data.data.page < data.data.totalPage

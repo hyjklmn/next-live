@@ -20,13 +20,12 @@ import { onlineConvert } from '@/lib/Platforms'
 
 function AnchorAvatar(props: any) {
   return (
-    <div className='flex items-center gap-2'>
+    <span className='flex items-center gap-2'>
       <Avatar className='w-8 h-8'>
-        <AvatarImage src={props.ownerHeadPic} alt={props.ownerName} />
-        <AvatarFallback>{props.ownerName.slice(0, 1)}</AvatarFallback>
+        <AvatarImage src={props.avatar} alt={props.userName} />
+        <AvatarFallback>{props.userName.slice(0, 1)}</AvatarFallback>
       </Avatar>
-      <span>{props.ownerName}</span>
-    </div>
+    </span>
   )
 }
 
@@ -62,8 +61,10 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                   </figure>
                 </CardTitle>
                 <CardDescription className='p-1 px-2 truncate select-none text-base' title={room.title}>
-                  <span className='text-primary font-semibold'>{room.userName}</span>
-                  ：{room.title}</CardDescription>
+                  <span className='text-primary font-semibold'>{room.userName}</span>：{room.title}
+                  <AnchorAvatar {...room} />
+
+                </CardDescription>
               </CardHeader>
             </Card>
           )

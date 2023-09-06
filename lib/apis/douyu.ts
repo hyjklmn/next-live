@@ -218,6 +218,7 @@ function joinRooms(list: DouYuListResult) {
       userName: l['nn'],
       cover: l['rs16'],
       online: l['ol'],
+      avatar: `https://apic.douyucdn.cn/upload/${l['av']}_small.jpg`
     })
   });
   return roomItem
