@@ -28,10 +28,14 @@ export default class DouYuDanmaku {
         this.heartbeat();
       },
       onReconnect: () => {
-        this.onClose?.call(this, ('11111'));
+        this.onReady?.bind(this);
+        this.onReady = undefined
       },
-      onClose: (e) => {
-        this.onClose?.call(this, "服务器连接失败$e");
+      onClose: () => {
+        this.stop();
+        this.onClose?.bind(this);
+        this.onClose = undefined
+        this.onMessage = undefined
       },
     })
     this.WebScoketUtils.connect()

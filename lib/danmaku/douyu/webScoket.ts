@@ -4,14 +4,13 @@ enum SocketStatus {
   closed,
 }
 type MessageEventListener = (message: any) => void;
-type CloseEventListener = (msg: string) => void;
 
 interface WebSocketUtilsConfig {
   url: string;
   backupUrl?: string;
   heartBeatTime: number;
   onMessage?: MessageEventListener;
-  onClose?: CloseEventListener;
+  onClose?: any;
   onReconnect?: () => void;
   onReady?: () => void;
   onHeartBeat?: () => void;
@@ -21,10 +20,9 @@ interface WebSocketUtilsConfig {
 export class WebSocketUtils {
   status = SocketStatus.closed;
   url: string;
-  backupUrl?: string;
   heartBeatTime: number;
   onMessage?: MessageEventListener;
-  onClose?: CloseEventListener;
+  onClose?: any;
   onReconnect?: () => void;
   onReady?: () => void;
   onHeartBeat?: () => void;
@@ -36,10 +34,8 @@ export class WebSocketUtils {
   reconnectTime = 0;
   reconnectTimer?: NodeJS.Timer;
   maxReconnectTime = 5;
-  streamSubscription?: any;
   constructor(config: WebSocketUtilsConfig) {
     this.url = config.url;
-    this.backupUrl = config.backupUrl;
     this.heartBeatTime = config.heartBeatTime;
     this.onMessage = config.onMessage;
     this.onClose = config.onClose;
@@ -52,9 +48,7 @@ export class WebSocketUtils {
     this.close();
     try {
       let wsurl = this.url;
-      if (this.backupUrl && this.backupUrl.length && retry) {
-        wsurl = this.backupUrl;
-      }
+
       this.webSocket = new WebSocket(wsurl);
       this.webSocket.onopen = () => this.ready();
 
@@ -105,7 +99,6 @@ export class WebSocketUtils {
   }
 
   onError(error: any): void {
-    console.error(error);
     this.status = SocketStatus.failed;
     if (this.onClose) {
       this.onClose(error.toString());
@@ -131,11 +124,8 @@ export class WebSocketUtils {
   }
 
   close(): void {
+
     this.status = SocketStatus.closed;
-    if (this.streamSubscription) {
-      this.streamSubscription.cancel();
-      this.streamSubscription = undefined;
-    }
 
     if (this.heartBeatTimer) {
       clearInterval(this.heartBeatTimer);
@@ -162,7 +152,7 @@ export class WebSocketUtils {
       }, 5000);
     } else {
       if (this.onClose) {
-        this.onClose("重连超过最大次数，与服务器断开连接");
+        this.onClose();
       }
       if (this.reconnectTimer) {
         clearInterval(this.reconnectTimer);
