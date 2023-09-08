@@ -20,11 +20,12 @@ import { onlineConvert } from '@/lib/Platforms'
 
 function AnchorAvatar(props: any) {
   return (
-    <span className='flex items-center gap-2'>
+    <span className='flex items-center gap-2 mt-2'>
       <Avatar className='w-8 h-8'>
         <AvatarImage src={props.avatar} alt={props.userName} />
         <AvatarFallback>{props.userName.slice(0, 1)}</AvatarFallback>
       </Avatar>
+      <span>{props.userName}</span>
     </span>
   )
 }
@@ -48,8 +49,9 @@ export default function RoomCard(props: { list: Array<Object>, }) {
             <Card key={index} className='overflow-hidden cursor-pointer' onClick={() => toPlayer(room.roomId)}>
               <CardHeader className='p-0 pb-2'>
                 <CardTitle>
-                  <figure className='relative min-h-[150px]'>
+                  <figure className='relative h-[150px]'>
                     <Image loader={imageLoader} src={room.cover}
+                      objectFit='cover'
                       priority
                       width='0'
                       height='0'
@@ -61,7 +63,7 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                   </figure>
                 </CardTitle>
                 <CardDescription className='p-1 px-2 truncate select-none text-base' title={room.title}>
-                  <span className='text-primary font-semibold'>{room.userName}</span>：{room.title}
+                  <span className='text-primary text-lg'>{room.title}</span>
                   <AnchorAvatar {...room} />
 
                 </CardDescription>

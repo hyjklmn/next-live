@@ -31,7 +31,6 @@ export default function Page() {
     }
   }
   useEffect(() => {
-
     (async () => {
       const details = await getRoomDetail(rid)
       const quality = await getPlayQualities(details)
