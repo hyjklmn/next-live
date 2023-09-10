@@ -171,7 +171,7 @@ function App() {
             })
           ]
         })
-      }, 500);
+      }, 1000);
       // 弹幕
       douyuDM.start(rid)
       douyuDM.onMessage = (msg) => {
@@ -207,7 +207,7 @@ function App() {
 
   return (
     <div className='w-full h-full'>
-      {options?.url ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
+      {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
     </div>
   );
 }
