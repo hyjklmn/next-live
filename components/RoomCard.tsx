@@ -51,7 +51,6 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                 <CardTitle>
                   <figure className='relative h-[150px]'>
                     <Image loader={imageLoader} src={room.cover}
-                      objectFit='cover'
                       priority
                       width='0'
                       height='0'

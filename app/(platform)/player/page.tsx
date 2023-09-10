@@ -6,7 +6,7 @@ import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 
 import Artplayer from 'artplayer';
-import flvjs from 'flv.js';
+// import flvjs from 'flv.js';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 export default function Page() {
   const query = useSearchParams()
@@ -16,25 +16,24 @@ export default function Page() {
   const [urls, setUrls] = useState<string[]>([])
   const artRef = useRef<any>()
   const douyuDM = new DouYuDanmaku()
-  function flvFunc(video: HTMLMediaElement, url: string, art: any) {
-    console.log(url);
-
-    if (flvjs.isSupported()) {
-      if (art.flv) art.flv.destroy();
-      const flv = flvjs.createPlayer({ type: 'flv', url });
-      flv.attachMediaElement(video);
-      flv.load();
-      art.flv = flv;
-      art.on('destroy', () => flv.destroy());
-    } else {
-      art.notice.show = 'Unsupported playback format: flv';
-    }
-  }
   useEffect(() => {
     (async () => {
+      const flvjs = (await import('flv.js')).default
       const details = await getRoomDetail(rid)
       const quality = await getPlayQualities(details)
       const cdns = await getPlayUrls(details, quality)
+      function flvFunc(video: HTMLMediaElement, url: string, art: any) {
+        if (flvjs.isSupported()) {
+          if (art.flv) art.flv.destroy();
+          const flv = flvjs.createPlayer({ type: 'flv', url });
+          flv.attachMediaElement(video);
+          flv.load();
+          art.flv = flv;
+          art.on('destroy', () => flv.destroy());
+        } else {
+          art.notice.show = 'Unsupported playback format: flv';
+        }
+      }
       setTimeout(() => {
         setRoomDetail(details)
         let arr: { url: string, html: string, default?: boolean }[] = []
@@ -95,6 +94,7 @@ export default function Page() {
         }
       }, 500);
     })()
+
 
     return () => {
       if (artRef.current && artRef.current.destroy) {
