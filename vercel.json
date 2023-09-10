@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/dyu/(.*)", 
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/mdyu",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/adyu",
+      "destination": "/api/proxy"
+    }
+  ]
+ }

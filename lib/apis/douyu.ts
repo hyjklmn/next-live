@@ -20,7 +20,7 @@ function getCategores(): DouYuLiveCategory {
 }
 
 async function getSubCategories(id: string) {
-  const result = await fetch(`https://www.douyu.com/japi/weblist/api/getC2List?shortName=${id}&offset=0&limit=200`)
+  const result = await fetch(`/dyu/japi/weblist/api/getC2List?shortName=${id}&offset=0&limit=200`)
   if (!result.ok) {
     throw new Error(result.statusText);
   }
