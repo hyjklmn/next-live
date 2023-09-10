@@ -16,7 +16,7 @@ module.exports = (req, res) => {
     }
   }
   if (req.url.startsWith('/adyu')) {
-    target = 'https://m.douyu.com'
+    target = 'http://alive.nsapps.cn'
     rewtire = {
       '^/adyu': ''
     }
