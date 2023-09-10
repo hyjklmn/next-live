@@ -5,11 +5,11 @@
       "destination": "/api/proxy"
     },
     {
-      "source": "/mdyu",
+      "source": "/mdyu/(.*)",
       "destination": "/api/proxy"
     },
     {
-      "source": "/adyu",
+      "source": "/adyu/(.*)",
       "destination": "/api/proxy"
     }
   ]
