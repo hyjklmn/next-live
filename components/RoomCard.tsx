@@ -2,6 +2,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import Image, { ImageLoaderProps } from 'next/image'
 import { Flame } from 'lucide-react'
+import { Skeleton } from "@/components/ui/skeleton"
 
 import {
   Card,
@@ -43,31 +44,43 @@ export default function RoomCard(props: { list: Array<Object>, }) {
 
   return (
     <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
+      {/* <div className="flex flex-col items-center space-y-2">
+        <Skeleton className="h-[150px] w-full" />
+        <div className="flex flex-col w-full space-y-2">
+          <Skeleton className="w-full h-[30px]" />
+          <div className='flex items-center justify-between'>
+            <Skeleton className="w-[35px] h-[35px] rounded-full" />
+            <Skeleton className="w-[85%] h-[30px]" />
+          </div>
+        </div>
+      </div> */}
       {
         props.list.map((room: any, index) => {
           return (
-            <Card key={index} className='overflow-hidden cursor-pointer' onClick={() => toPlayer(room.roomId)}>
-              <CardHeader className='p-0 pb-2'>
-                <CardTitle>
-                  <figure className='relative h-[150px]'>
-                    <Image loader={imageLoader} src={room.cover}
-                      priority
-                      width='0'
-                      height='0'
-                      className="min-w-full h-full"
-                      alt={room.userName} />
-                    <div className='flex items-center absolute bottom-0 right-0 text-sm text-secondary rounded font-medium bg-primary/75'>
-                      <Flame size={16} /> {onlineConvert(room.online)}
-                    </div>
-                  </figure>
-                </CardTitle>
-                <CardDescription className='p-1 px-2 truncate select-none text-base' title={room.title}>
-                  <span className='text-primary text-lg'>{room.title}</span>
-                  <AnchorAvatar {...room} />
+            <>
+              <Card key={index} className='overflow-hidden cursor-pointer' onClick={() => toPlayer(room.roomId)}>
+                <CardHeader className='p-0 pb-2'>
+                  <CardTitle>
+                    <figure className='relative h-[150px]'>
+                      <Image loader={imageLoader} src={room.cover}
+                        priority
+                        width='0'
+                        height='0'
+                        className="min-w-full h-full"
+                        alt={room.userName} />
+                      <div className='flex items-center absolute bottom-0 right-0 text-sm text-secondary rounded font-medium bg-primary/75'>
+                        <Flame size={16} /> {onlineConvert(room.online)}
+                      </div>
+                    </figure>
+                  </CardTitle>
+                  <CardDescription className='p-1 px-2 truncate select-none text-base' title={room.title}>
+                    <span className='text-primary text-lg'>{room.title}</span>
+                    <AnchorAvatar {...room} />
 
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </>
           )
         })}
     </div>

@@ -122,6 +122,7 @@ import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { DouYuLiveRoomDetail } from '@/lib/types/apis';
 import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 import Option from 'artplayer/types/option';
+import FlvJs from 'flv.js';
 
 function App() {
   const query = useSearchParams()
@@ -138,16 +139,27 @@ function App() {
       const details = await getRoomDetail(rid)
       const quality = await getPlayQualities(details)
       const cdns = await getPlayUrls(details, quality)
+
       setTimeout(() => {
         setRoomDetail(details)
         let arr: { url: string, html: string, default?: boolean }[] = []
         // setQualities(preState => [...preState, ...quality])
         // setUrls(preState => [...preState, ...cdns])
-        for (let i = 0; i < cdns.length; i += 3) {
-          arr.push({
-            url: cdns[i],
-            html: ''
-          })
+        if (cdns.length <= 3) {
+          for (let i = 0; i < cdns.length; i++) {
+            arr.push({
+              url: cdns[i],
+              html: ''
+            })
+          }
+
+        } else {
+          for (let i = 0; i < cdns.length; i += 3) {
+            arr.push({
+              url: cdns[i],
+              html: ''
+            })
+          }
         }
         for (let k = 0; k < quality.length; k++) {
           arr[k]['html'] = quality[k].quality
@@ -168,10 +180,11 @@ function App() {
             artplayerPluginDanmuku({
               danmuku: [],
               speed: 10,
+              synchronousPlayback: true
             })
           ]
         })
-      }, 1000);
+      }, 500);
       // 弹幕
       douyuDM.start(rid)
       douyuDM.onMessage = (msg) => {
@@ -188,14 +201,41 @@ function App() {
       function flvFunc(video: HTMLMediaElement, url: string, art: any) {
         if (flvjs.isSupported()) {
           if (art.flv) art.flv.destroy();
-          const flv = flvjs.createPlayer({ type: 'flv', url });
+          const flv = flvjs.createPlayer({
+            isLive: true,
+            type: 'flv',
+            url,
+          },
+            {
+              enableStashBuffer: false,
+              stashInitialSize: 128,
+              autoCleanupSourceBuffer: true,
+              fixAudioTimestampGap: true
+            });
           flv.attachMediaElement(video);
           flv.load();
           art.flv = flv;
+          handleStuck(flv)
           art.on('destroy', () => flv.destroy());
         } else {
           art.notice.show = 'Unsupported playback format: flv';
         }
+      }
+      function handleStuck(flv: FlvJs.Player) {
+        let lastDecodedFrames = 0
+        let stuckTime = 0
+        flv.on('statistics_info', (res) => {
+          if (lastDecodedFrames === res.decodedFrames) {
+            stuckTime++
+            if (stuckTime > 1) {
+              console.log('chonglian');
+            }
+          }
+          else {
+            lastDecodedFrames = res.decodedFrames
+          }
+        })
+
       }
     })()
     return () => {
