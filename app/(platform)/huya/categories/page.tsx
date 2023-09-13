@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from 'react';
 import Image, { ImageLoaderProps } from 'next/image'
 import { usePathname } from 'next/navigation';
-import { getCategores, getSubCategories } from '@/lib/apis/douyu'
+import { getHyCategores, getHySubCategories } from '@/lib/apis/huya'
 import { LiveCategory, LiveSubCategory } from '@/lib/types/apis';
 import Link from 'next/link';
 
@@ -10,10 +10,9 @@ import Link from 'next/link';
 export default function Categories() {
   const pathName = usePathname()
   const [category, setCategory] = useState<LiveCategory>([])
-  const categores = getCategores()
-
+  const categores = getHyCategores()
   const [subCategory, setSubCategory] = useState<LiveSubCategory[]>([])
-  const currentCate = useRef('PCgame')
+  const currentCate = useRef('1')
   function changeCate(cate: string) {
     currentCate.current = cate
     category.map(c => {
@@ -23,7 +22,7 @@ export default function Categories() {
 
   useEffect(() => {
     categores.forEach(async cate => {
-      let subs: LiveSubCategory[] = await getSubCategories(cate.id)
+      let subs: LiveSubCategory[] = await getHySubCategories(cate.id)
       if (subs.length != 0) {
         cate.children = subs
         setCategory([...categores])
@@ -54,12 +53,14 @@ export default function Categories() {
             return (
               <Link href={`${pathName}/${sub.id}`} key={sub.id} className='border text-center rounded-lg p-3  hover:scale-105 hover:border-gray-600 hover:shadow-sm transition-all'>
                 <figure className='min-h-[100px]'>
-                  <Image loader={imageLoader} src={sub.pic}
+                  <Image loader={imageLoader}
+                    src={sub.pic}
                     priority
                     unoptimized
                     width="0"
                     height="0"
-                    className="w-full h-auto" alt={sub.name}></Image>
+                    className="w-full h-[167px] object-cover"
+                    alt={sub.name}></Image>
                 </figure>
                 <span>
                   {sub.name}

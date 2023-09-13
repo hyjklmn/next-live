@@ -1,9 +1,9 @@
-import { DouYuLiveCategory, DouYuLiveRoom, DouYuSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, DouYuLiveRoomDetail } from "../types/apis";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, DouYuLiveRoomDetail } from "../types/apis";
 import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
 
-function getCategores(): DouYuLiveCategory {
+function getCategores(): LiveCategory {
 
-  const LiveCategory: DouYuLiveCategory = [
+  const LiveCategory: LiveCategory = [
     { id: "PCgame", name: "网游竞技", children: [] },
     { id: "djry", name: "单机热游", children: [] },
     { id: "syxx", name: "手游休闲", children: [] },
@@ -24,7 +24,7 @@ async function getSubCategories(id: string) {
   if (!result.ok) {
     throw new Error(result.statusText);
   }
-  let sub: DouYuSubCategory[] = []
+  let sub: LiveSubCategory[] = []
   const data: { data: { total: number, list: [] }, error: number, message: string } = await result.json()
   data.data.list.forEach(item => {
     sub.push({
@@ -37,7 +37,7 @@ async function getSubCategories(id: string) {
   return sub
 }
 
-async function getCategoryRooms(subId: DouYuSubCategory['id'], page = 1) {
+async function getCategoryRooms(subId: LiveSubCategory['id'], page = 1) {
   const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_${subId}/page=${page}`,)
   if (!result.ok) {
     throw new Error('Failed to fetch data')

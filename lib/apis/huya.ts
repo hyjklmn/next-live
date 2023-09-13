@@ -1,6 +1,14 @@
 import { liveResult } from "../LiveResult";
-import { DouYuLiveRoom } from "../types/apis";
-async function getRecommendRooms(page = 1) {
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory } from "../types/apis";
+
+type Data = {
+  data: any[];
+  msg: string;
+  status: number;
+  type: number;
+  updateTime: number;
+};
+async function getHyRecommendRooms(page = 1) {
   const result = await fetch(`/hy?m=LiveList&do=getLiveListByPage&tagAll=0&page=${page}`)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
@@ -32,4 +40,41 @@ async function getRecommendRooms(page = 1) {
   return liveResult(hasMore, roomItems)
 }
 
-export { getRecommendRooms }
+function getHyCategores(): LiveCategory {
+
+  const LiveCategory: LiveCategory = [
+    { id: "1", name: "网游", children: [] },
+    { id: "2", name: "单机", children: [] },
+    { id: "3", name: "手游", children: [] },
+    { id: "8", name: "娱乐", children: [] },
+  ];
+  // LiveCategory.forEach(async live => {
+  //   const item = await getSubCategories(live.id)
+  //   live.children = live.children.concat(item)
+  // })
+  return LiveCategory
+}
+
+async function getHySubCategories(id: string) {
+
+  const result = await fetch(`/lhy/liveconfig/game/bussLive?bussType=${id}`)
+  if (!result.ok) {
+    throw new Error(result.statusText);
+  }
+
+  let sub: LiveSubCategory[] = []
+  const data: Data = await result.json()
+  data.data.forEach(item => {
+    const gid = item["gid"]
+    sub.push({
+      pic: `https://huyaimg.msstatic.com/cdnimage/game/${gid}-MS.jpg`,
+      id: gid,
+      parentId: id,
+      name: item["gameFullName"],
+    })
+  })
+  return sub
+}
+
+
+export { getHyRecommendRooms, getHyCategores, getHySubCategories }

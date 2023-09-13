@@ -1,9 +1,9 @@
-type DouYuLiveCategory = {
+type LiveCategory = {
   id: string
   name: string
   children: Array[]
 }[]
-type DouYuSubCategory = {
+type LiveSubCategory = {
   pic: string
   id: strin | number
   parentId: string
@@ -57,4 +57,4 @@ interface DouYuSearchAnchorResult {
   userName: string
   liveStatus: string //1直播,2没直播
 }
-export { DouYuLiveCategory, DouYuSubCategory, DouYuLiveRoom, DouYuListResult, DouYuLiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }
+export { LiveCategory, LiveSubCategory, DouYuLiveRoom, DouYuListResult, DouYuLiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }

@@ -1,8 +1,9 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { getRecommendRooms } from '@/lib/apis/huya'
+import { getHyRecommendRooms } from '@/lib/apis/huya'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
+import Link from 'next/link'
 export default function Page() {
   const [recommend, setRecommend] = useState<LiveResult>({
     hasMore: true,
@@ -10,12 +11,13 @@ export default function Page() {
   })
   useEffect(() => {
     (async function () {
-      const data = await getRecommendRooms()
+      const data = await getHyRecommendRooms()
       setRecommend(data)
     })()
   }, [])
   return (
     <div>
+      <Link href='/huya/categories'>虎牙 categories</Link>
       <RoomCard list={recommend.roomItems} />
     </ div>
   )

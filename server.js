@@ -38,6 +38,36 @@ const devProxy = {
             '^/hy': ''
         },
         changeOrigin: true 
+    },
+    '/lhy':{
+        target: 'https://live.cdn.huya.com',
+        pathRewrite: {
+            '^/lhy': ''
+        },
+        changeOrigin: true 
+    },
+    
+    '/mhy':{
+        target: 'https://m.huya.com',
+        pathRewrite: {
+            '^/mhy': ''
+        },
+        changeOrigin: true 
+    },
+    '/shy'  :{
+        target: 'https://search.cdn.huya.com',
+        pathRewrite: {
+            '^/shy': ''
+        },
+        changeOrigin: true
+    },
+    /// 匿名登录获取uid
+    '/uhy':{
+        target: 'https://udblgn.huya.com/web/anonymousLogin',
+        pathRewrite: {
+            '^/uhy': ''
+        },
+        changeOrigin: true
     }
 }
 
