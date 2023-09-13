@@ -70,7 +70,7 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                       height='0'
                       className="min-w-full h-full"
                       alt={room.userName} />
-                    <div className='flex items-center absolute bottom-0 right-0 p-[2px] text-sm rounded font-medium bg-secondary/80 text-red-500'>
+                    <div className='flex items-center absolute bottom-0 right-0 p-[2px] text-sm rounded font-medium bg-secondary/80'>
                       <Flame size={16} /> {onlineConvert(room.online)}
                     </div>
                   </figure>
