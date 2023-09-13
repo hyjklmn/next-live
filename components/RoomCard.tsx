@@ -26,8 +26,8 @@ function AnchorAvatar(props: any) {
         <AvatarImage src={props.avatar} alt={props.userName} />
         <AvatarFallback>{props.userName.slice(0, 1)}</AvatarFallback>
       </Avatar>
-      <span className='flex flex-col'>
-        <span className='text-primary text-lg'>{props.title}</span>
+      <span className='flex flex-col overflow-hidden'>
+        <span className='text-primary text-lg truncate'>{props.title}</span>
         <span>{props.userName}</span>
       </span>
     </span>

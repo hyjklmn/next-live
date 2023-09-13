@@ -12,7 +12,7 @@ type LiveSubCategory = {
 
 type DouYuLiveRoom = {
   cover: string,
-  online: string,
+  online: string | number,
   roomId: string,
   title: string,
   userName: string,

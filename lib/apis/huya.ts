@@ -1,5 +1,5 @@
 import { liveResult } from "../LiveResult";
-import { LiveCategory, DouYuLiveRoom, LiveSubCategory } from "../types/apis";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult } from "../types/apis";
 
 type Data = {
   data: any[];
@@ -76,5 +76,26 @@ async function getHySubCategories(id: string) {
   return sub
 }
 
+async function getHyCategoryRoom(id: string, page = 1) {
+  const result = await fetch(`/hy?m=LiveList&do=getLiveListByPage&tagAll=0&gameId=${id}&page=${page}`)
+  const data = await result.json()
+  const roomItem: DouYuLiveRoom = []
+  data.data.datas.forEach((item: {
+    avatar180: string; profileRoom: string; introduction: string; screenshot: string; nick: string; totalCount: number;
+  }) => {
+    roomItem.push({
+      roomId: item.profileRoom,
+      title: item.introduction,
+      cover: item.screenshot,
+      userName: item.nick,
+      online: item.totalCount,
+      avatar: item.avatar180
+    })
+  })
+  const hasMore = data.data.page < data.data.totalPage
+  return liveResult(hasMore, roomItem)
 
-export { getHyRecommendRooms, getHyCategores, getHySubCategories }
+}
+
+
+export { getHyRecommendRooms, getHyCategores, getHySubCategories, getHyCategoryRoom }
