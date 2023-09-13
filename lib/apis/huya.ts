@@ -1,5 +1,6 @@
 import { liveResult } from "../LiveResult";
-import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, DouYuLiveRoomDetail } from "../types/apis";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, LiveRoomDetail } from "../types/apis";
+const md5 = require('md5');
 
 type Data = {
   data: any[];
@@ -9,10 +10,15 @@ type Data = {
   updateTime: number;
 };
 
+enum HuyaLineType {
+  flv = "flv",
+  hls = "hls",
+}
+
 
 type HuyaLine = {
   line: string;
-  lineType: 'flv' | 'hls';
+  lineType: HuyaLineType;
   flvAntiCode: string;
   hlsAntiCode: string;
   streamName: string;
@@ -21,6 +27,11 @@ type HuyaLine = {
 type HuyaBitRate = {
   name: string;
   bitRate: number;
+}
+
+type LivePlayQuality = {
+  data: string[],
+  quality: any,
 }
 
 async function getHyRecommendRooms(page = 1) {
@@ -111,11 +122,72 @@ async function getHyCategoryRoom(id: string, page = 1) {
   return liveResult(hasMore, roomItem)
 
 }
+
+async function getHyPlayQualites(detail: LiveRoomDetail) {
+  const qualities = [];
+  const urlData = detail.data;
+
+  if (urlData.bitRates.length === 0) {
+    urlData.bitRates = [
+      {
+        name: "原画",
+        bitRate: 0,
+      },
+      {
+        name: "高清",
+        bitRate: 2000,
+      },
+    ];
+  }
+  for (const item of urlData.bitRates) {
+    const urls: string[] = [];
+
+    for (const line of urlData.lines) {
+      let src = line.line;
+      src += `/${line.streamName}`;
+
+      if (line.lineType === HuyaLineType.flv) {
+        src += ".flv";
+      }
+
+      if (line.lineType === HuyaLineType.hls) {
+        src += ".m3u8";
+      }
+
+      const parms = processAnticode(
+        line.lineType === HuyaLineType.flv ? line.flvAntiCode : line.hlsAntiCode,
+        urlData.uid,
+        line.streamName,
+      );
+      src += `?${parms}`;
+
+      if (item.bitRate > 0) {
+        src += `&ratio=${item.bitRate}`;
+      }
+
+      urls.push(src);
+    }
+
+    qualities.push({
+      data: urls,
+      quality: item.name,
+    });
+  }
+  return Promise.resolve(qualities);
+}
+async function getHyPlayUrls(detail: LiveRoomDetail, quality: LivePlayQuality): Promise<string[]> {
+  console.log(detail);
+  console.log(quality);
+
+  return quality.data;
+}
+
 async function getHyRoomDetail(roomId: string) {
 
   const result = await fetch(`/mhy/${roomId}`, {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/91.0.4472.69",
     }
   })
   const data = await result.text()
@@ -124,7 +196,6 @@ async function getHyRoomDetail(roomId: string) {
   const text = match?.[1];
   const jsonObj = JSON.parse(`{${text}}`);
   let title = jsonObj["roomInfo"]["tLiveInfo"]["sIntroduction"] === '' ? jsonObj["roomInfo"]["tLiveInfo"]["sRoomName"] : '';
-  console.log(jsonObj);
   const huyaLines: HuyaLine[] = [];
   const huyaBiterates: HuyaBitRate[] = [];
   //读取可用线路
@@ -134,7 +205,7 @@ async function getHyRoomDetail(roomId: string) {
     if ((item?.sFlvUrl?.toString() ?? "").length > 0) {
       huyaLines.push({
         line: item.sFlvUrl,
-        lineType: 'flv',
+        lineType: HuyaLineType.flv,
         flvAntiCode: item.sFlvAntiCode,
         hlsAntiCode: item.sHlsAntiCode,
         streamName: item.sStreamName,
@@ -156,7 +227,7 @@ async function getHyRoomDetail(roomId: string) {
   const topSid = parseInt(data.match(/lChannelId":([0-9]+)/)?.[1] ?? "0");
   const subSid = parseInt(data.match(/lSubChannelId":([0-9]+)/)?.[1] ?? "0");
   const uid = await getAnonymousUid()
-  let liveRoomDetail: DouYuLiveRoomDetail = {
+  let liveRoomDetail: LiveRoomDetail = {
     roomId: jsonObj["roomInfo"]["tLiveInfo"]["lProfileRoom"],
     title: title,
     userName: jsonObj["roomInfo"]["tProfileInfo"]["sNick"],
@@ -180,7 +251,6 @@ async function getHyRoomDetail(roomId: string) {
     },
   }
   return liveRoomDetail
-  // return data
 }
 
 
@@ -211,5 +281,37 @@ function getUUid(): string {
   return result.toString();
 }
 
+function processAnticode(anticode: string, uid: string, streamname: string): string {
+  const q: { [key: string]: string } = {};
+  const anticodeParams = new URLSearchParams(anticode);
+  anticodeParams.forEach((value, key) => {
+    q[key] = value;
+  });
+
+  q["ver"] = "1";
+  q["sv"] = "2110211124";
+  q["seqid"] = (parseInt(uid) + Date.now()).toString();
+  q["uid"] = uid;
+  q["uuid"] = getUUid();
+
+  const ss = md5(`${q["seqid"]}|${q["ctype"]}|${q["t"]}`).toString();
+  q["fm"] = decodeURIComponent(atob(q["fm"]))
+    .replace("$0", q["uid"])
+    .replace("$1", streamname)
+    .replace("$2", ss)
+    .replace("$3", q["wsTime"]);
+
+  q["wsSecret"] = md5(q["fm"]).toString();
+
+  delete q["fm"];
+  if ("txyp" in q) {
+    delete q["txyp"];
+  }
+
+  const queryParameters = new URLSearchParams(q);
+
+  return queryParameters.toString();
+}
+
 export { getHyRecommendRooms, getHyCategores, getHySubCategories, getHyCategoryRoom }
-export { getHyRoomDetail }
+export { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls }

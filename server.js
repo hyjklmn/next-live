@@ -53,6 +53,10 @@ const devProxy = {
             '^/mhy': ''
         },
         changeOrigin: true,
+        onProxyReq: function(proxyReq, req, res) {
+            proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1 Edg/91.0.4472.69');
+            proxyReq.setHeader('Content-Type', 'application/x-www-form-urlencoded');
+        },
     },
     '/shy': {
         target: 'https://search.cdn.huya.com',

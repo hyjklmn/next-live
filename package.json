@@ -31,6 +31,7 @@
     "hls.js": "^1.4.10",
     "http-proxy-middleware": "^2.0.6",
     "lucide-react": "^0.263.1",
+    "md5": "^2.3.0",
     "next": "13.4.13",
     "next-themes": "^0.2.1",
     "postcss": "8.4.27",

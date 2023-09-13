@@ -24,7 +24,7 @@ interface LiveResult {
   roomItems: DouYuLiveRoom
 }
 
-interface DouYuLiveRoomDetail {
+interface LiveRoomDetail {
   roomId: string
   title: string
   userName: string
@@ -57,4 +57,4 @@ interface DouYuSearchAnchorResult {
   userName: string
   liveStatus: string //1直播,2没直播
 }
-export { LiveCategory, LiveSubCategory, DouYuLiveRoom, DouYuListResult, DouYuLiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }
+export { LiveCategory, LiveSubCategory, DouYuLiveRoom, DouYuListResult, LiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }

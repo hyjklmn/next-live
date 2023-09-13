@@ -121,28 +121,26 @@ import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 
 
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
-import { DouYuLiveRoomDetail } from '@/lib/types/apis';
-import { getHyRoomDetail } from '@/lib/apis/huya';
+import { LiveRoomDetail } from '@/lib/types/apis';
+import { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls } from '@/lib/apis/huya';
 function App() {
   const query = useSearchParams()
   const rid = query.get('rid') as string
   const artRef = useRef<Artplayer>()
   const douyuDM = new DouYuDanmaku()
-  const [roomDetail, setRoomDetail] = useState<DouYuLiveRoomDetail>()
+  const [roomDetail, setRoomDetail] = useState<LiveRoomDetail>()
   //   const [qualities, setQualities] = useState<{ quality: string; data: any; }[]>([])
   //   const [urls, setUrls] = useState<string[]>([])
   const [options, setOptions] = useState<Option>()
-  useEffect(() => {
-    getHyRoomDetail(rid)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  return <div>{rid}</div>
   useEffect(() => {
     (async () => {
       const flvjs = (await import('flv.js')).default
       const details = await getRoomDetail(rid)
       const quality = await getPlayQualities(details)
       const cdns = await getPlayUrls(details, quality)
+
+      // const details = await getHyRoomDetail(rid)  hy
+      // const quality = await getHyPlayQualites(details) hy
 
       setTimeout(() => {
         setRoomDetail(details)
@@ -169,6 +167,7 @@ function App() {
           arr[k]['html'] = quality[k].quality
         }
         arr[0]['default'] = true
+
         setOptions({
           container: '',
           url: arr[0].url,

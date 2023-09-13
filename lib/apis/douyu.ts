@@ -1,4 +1,4 @@
-import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, DouYuLiveRoomDetail } from "../types/apis";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveRoomDetail } from "../types/apis";
 import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
 
 function getCategores(): LiveCategory {
@@ -107,7 +107,7 @@ async function searchAnchors(keyword: string, page = 1) {
   return LiveSearchAnchorResult(hasMore, anchorItems)
 }
 
-async function getRoomDetail(roomId: string): Promise<DouYuLiveRoomDetail> {
+async function getRoomDetail(roomId: string): Promise<LiveRoomDetail> {
   const result = await fetch(`/mdyu/${roomId}/index.pageContext.json`)
   const data = await result.json()
   let roomInfo = data.pageProps.room.roomInfo.roomInfo
@@ -116,7 +116,7 @@ async function getRoomDetail(roomId: string): Promise<DouYuLiveRoomDetail> {
   let crptext = encodeData.data[`room${roomId}`]
   const args = await getPlayArgs(crptext, roomId)
 
-  let liveRoomDetail: DouYuLiveRoomDetail = {
+  let liveRoomDetail: LiveRoomDetail = {
     roomId: roomInfo.rid,
     title: roomInfo.roomName,
     userName: roomInfo.nickname,
@@ -151,7 +151,7 @@ async function getPlayArgs(html: string, rid: string) {
   return ''
 }
 
-async function getPlayQualities(roomDetail: DouYuLiveRoomDetail) {
+async function getPlayQualities(roomDetail: LiveRoomDetail) {
   let params = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
   const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
     method: 'POST',
@@ -194,7 +194,7 @@ async function getPlayUrl(roomId: string, args: string, rate: number, cdn: strin
   return url
 }
 
-async function getPlayUrls(roomDetail: DouYuLiveRoomDetail, qualities: { quality: string, data: any }[]) {
+async function getPlayUrls(roomDetail: LiveRoomDetail, qualities: { quality: string, data: any }[]) {
   const args = roomDetail.data
   const urls: string[] = []
   qualities.forEach((quality: any) => {
