@@ -34,8 +34,8 @@ interface DouYuLiveRoomDetail {
   introduction: string
   notice: string
   status: string
-  danmakuData: string
-  data: string
+  danmakuData: any
+  data: any
   url: string
 }
 

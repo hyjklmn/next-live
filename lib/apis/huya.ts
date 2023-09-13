@@ -1,5 +1,5 @@
 import { liveResult } from "../LiveResult";
-import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult } from "../types/apis";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, DouYuLiveRoomDetail } from "../types/apis";
 
 type Data = {
   data: any[];
@@ -8,6 +8,21 @@ type Data = {
   type: number;
   updateTime: number;
 };
+
+
+type HuyaLine = {
+  line: string;
+  lineType: 'flv' | 'hls';
+  flvAntiCode: string;
+  hlsAntiCode: string;
+  streamName: string;
+}
+
+type HuyaBitRate = {
+  name: string;
+  bitRate: number;
+}
+
 async function getHyRecommendRooms(page = 1) {
   const result = await fetch(`/hy?m=LiveList&do=getLiveListByPage&tagAll=0&page=${page}`)
   if (!result.ok) {
@@ -96,6 +111,105 @@ async function getHyCategoryRoom(id: string, page = 1) {
   return liveResult(hasMore, roomItem)
 
 }
+async function getHyRoomDetail(roomId: string) {
 
+  const result = await fetch(`/mhy/${roomId}`, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  })
+  const data = await result.text()
+  const regex = /window\.HNF_GLOBAL_INIT.=.\{(.*?)\}.<\/script>/g;
+  const match = regex.exec(data);
+  const text = match?.[1];
+  const jsonObj = JSON.parse(`{${text}}`);
+  let title = jsonObj["roomInfo"]["tLiveInfo"]["sIntroduction"] === '' ? jsonObj["roomInfo"]["tLiveInfo"]["sRoomName"] : '';
+  console.log(jsonObj);
+  const huyaLines: HuyaLine[] = [];
+  const huyaBiterates: HuyaBitRate[] = [];
+  //读取可用线路
+  const lines = jsonObj["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vStreamInfo"]["value"];
+  for (const item of lines) {
+
+    if ((item?.sFlvUrl?.toString() ?? "").length > 0) {
+      huyaLines.push({
+        line: item.sFlvUrl,
+        lineType: 'flv',
+        flvAntiCode: item.sFlvAntiCode,
+        hlsAntiCode: item.sHlsAntiCode,
+        streamName: item.sStreamName,
+      });
+    }
+  }
+  //清晰度
+  const biterates = jsonObj["roomInfo"]["tLiveInfo"]["tLiveStreamInfo"]["vBitRateInfo"]["value"];
+  for (const item of biterates) {
+    const name = item.sDisplayName.toString();
+    if (name.includes("HDR")) {
+      continue;
+    }
+    huyaBiterates.push({
+      bitRate: item.iBitRate,
+      name: name,
+    });
+  }
+  const topSid = parseInt(data.match(/lChannelId":([0-9]+)/)?.[1] ?? "0");
+  const subSid = parseInt(data.match(/lSubChannelId":([0-9]+)/)?.[1] ?? "0");
+  const uid = await getAnonymousUid()
+  let liveRoomDetail: DouYuLiveRoomDetail = {
+    roomId: jsonObj["roomInfo"]["tLiveInfo"]["lProfileRoom"],
+    title: title,
+    userName: jsonObj["roomInfo"]["tProfileInfo"]["sNick"],
+    userAvatar: jsonObj["roomInfo"]["tProfileInfo"]["sAvatar180"],
+    cover: jsonObj["roomInfo"]["tLiveInfo"]["sScreenshot"],
+    online: jsonObj["roomInfo"]["tLiveInfo"]["lTotalCount"],
+    introduction: jsonObj["roomInfo"]["tLiveInfo"]["sIntroduction"],
+    notice: jsonObj["welcomeText"],
+    status: jsonObj["roomInfo"]["eLiveStatus"],
+    danmakuData: {
+      ayyuid: jsonObj["roomInfo"]["tLiveInfo"]["lYyid"] ?? 0,
+      topSid: topSid ?? 0,
+      subSid: subSid ?? 0,
+    },
+    url: `https://www.huya.com/${roomId}`,
+    data: {
+      url: `https:${atob(jsonObj["roomProfile"]["liveLineUrl"].toString())}`,
+      lines: huyaLines,
+      bitRates: huyaBiterates,
+      uid: uid,
+    },
+  }
+  return liveRoomDetail
+  // return data
+}
+
+
+async function getAnonymousUid() {
+  const body = {
+    "appId": 5002,
+    "byPass": 3,
+    "context": "",
+    "version": "2.4",
+    "data": {}
+  }
+  const result = await fetch('/uhy', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  const data = await result.json()
+  return data.data.uid
+
+
+}
+function getUUid(): string {
+  const currentTime = Date.now();
+  const randomValue = Math.floor(Math.random() * 4294967295);
+  const result = (currentTime % 10000000000 * 1000 + randomValue) % 4294967295;
+  return result.toString();
+}
 
 export { getHyRecommendRooms, getHyCategores, getHySubCategories, getHyCategoryRoom }
+export { getHyRoomDetail }

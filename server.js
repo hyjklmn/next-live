@@ -1,6 +1,6 @@
 const express = require('express')
 const next = require('next')
-const {createProxyMiddleware } = require('http-proxy-middleware')
+const { createProxyMiddleware } = require('http-proxy-middleware')
 
 const devProxy = {
     // '/api': {
@@ -11,50 +11,50 @@ const devProxy = {
     //     changeOrigin: true
     // },
     '/dyu': {
-        target: 'https://www.douyu.com', 
+        target: 'https://www.douyu.com',
         pathRewrite: {
             '^/dyu': ''
         },
-        changeOrigin: true 
+        changeOrigin: true
     },
     '/mdyu': {
-        target: 'https://m.douyu.com', 
+        target: 'https://m.douyu.com',
         pathRewrite: {
             '^/mdyu': ''
         },
-        changeOrigin: true 
+        changeOrigin: true,
     },
-    '/adyu':{
+    '/adyu': {
         target: 'http://alive.nsapps.cn',
         pathRewrite: {
             '^/adyu': ''
         },
-        changeOrigin: true 
+        changeOrigin: true
     },
     // huya
-    '/hy':{
+    '/hy': {
         target: 'https://www.huya.com/cache.php',
         pathRewrite: {
             '^/hy': ''
         },
-        changeOrigin: true 
+        changeOrigin: true
     },
-    '/lhy':{
+    '/lhy': {
         target: 'https://live.cdn.huya.com',
         pathRewrite: {
             '^/lhy': ''
         },
-        changeOrigin: true 
+        changeOrigin: true
     },
-    
-    '/mhy':{
+
+    '/mhy': {
         target: 'https://m.huya.com',
         pathRewrite: {
             '^/mhy': ''
         },
-        changeOrigin: true 
+        changeOrigin: true,
     },
-    '/shy'  :{
+    '/shy': {
         target: 'https://search.cdn.huya.com',
         pathRewrite: {
             '^/shy': ''
@@ -62,12 +62,12 @@ const devProxy = {
         changeOrigin: true
     },
     /// 匿名登录获取uid
-    '/uhy':{
+    '/uhy': {
         target: 'https://udblgn.huya.com/web/anonymousLogin',
         pathRewrite: {
             '^/uhy': ''
         },
-        changeOrigin: true
+        changeOrigin: true,
     }
 }
 
@@ -82,7 +82,7 @@ app.prepare()
     .then(() => {
         const server = express()
         if (dev && devProxy) {
-            Object.keys(devProxy).forEach(function(context) {
+            Object.keys(devProxy).forEach(function (context) {
                 server.use(createProxyMiddleware(context, devProxy[context]))
             })
         }

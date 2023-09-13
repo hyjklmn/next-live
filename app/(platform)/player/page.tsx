@@ -114,16 +114,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import Artplayer from './player';
-// import flvjs from 'flv.js';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
+import FlvJs from 'flv.js';
+import Option from 'artplayer/types/option';
+import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
 
 
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { DouYuLiveRoomDetail } from '@/lib/types/apis';
-import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
-import Option from 'artplayer/types/option';
-import FlvJs from 'flv.js';
-
+import { getHyRoomDetail } from '@/lib/apis/huya';
 function App() {
   const query = useSearchParams()
   const rid = query.get('rid') as string
@@ -133,6 +132,11 @@ function App() {
   //   const [qualities, setQualities] = useState<{ quality: string; data: any; }[]>([])
   //   const [urls, setUrls] = useState<string[]>([])
   const [options, setOptions] = useState<Option>()
+  useEffect(() => {
+    getHyRoomDetail(rid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return <div>{rid}</div>
   useEffect(() => {
     (async () => {
       const flvjs = (await import('flv.js')).default
