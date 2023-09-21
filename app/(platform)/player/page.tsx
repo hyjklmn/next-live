@@ -117,7 +117,7 @@ import Artplayer from './player';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import FlvJs from 'flv.js';
 import Option from 'artplayer/types/option';
-import DouYuDanmaku from '@/lib/danmaku/douyu/douyu';
+import DouYuDanmaku from '@/lib/danmaku/douyu';
 
 
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
