@@ -4,7 +4,6 @@ import { getHyRecommendRooms } from '@/lib/apis/huya'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
 import Link from 'next/link'
-import HuYaDanmaku from "@/lib/danmaku/huya";
 
 export default function Page() {
   const [recommend, setRecommend] = useState<LiveResult>({
@@ -13,18 +12,17 @@ export default function Page() {
   })
 
   useEffect(() => {
-    const hy = new HuYaDanmaku(520511);
     (async function () {
       const data = await getHyRecommendRooms()
       setRecommend(data)
-      hy.addListener('message', (msg) => {
-        console.log(msg);
-      })
+      // hy.addListener('message', (msg) => {
+      //   console.log(msg);
+      // })
     })()
-    return () => {
-      hy.exit()
-      hy.removeAllListeners()
-    }
+    // return () => {
+    //   hy.exit()
+    //   hy.removeAllListeners()
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (

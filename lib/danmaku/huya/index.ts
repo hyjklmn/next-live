@@ -116,7 +116,6 @@ export default class DouYuDanmaku extends Client {
         const _this = this
         const fr = new FileReader()
         fr.readAsArrayBuffer(data.data)
-
         fr.onload = function () {
           const buffer = this.result as Uint8Array
           let stream = new Taf.JceInputStream(buffer)

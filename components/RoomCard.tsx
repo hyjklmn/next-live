@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import Image, { ImageLoaderProps } from 'next/image'
 import { Flame } from 'lucide-react'
 import { Skeleton } from "@/components/ui/skeleton"
@@ -37,12 +37,14 @@ function AnchorAvatar(props: any) {
 
 export default function RoomCard(props: { list: Array<Object>, }) {
   const router = useRouter()
+  const path = usePathname()
   const imageLoader = ({ src, width }: ImageLoaderProps) => {
     return `${src}?w=${width}`
   }
 
   function toPlayer(rid: string) {
-    router.push(`/player/?rid=${rid}`)
+    const regex = /\/([^/]+)\/?/g;
+    router.push(`/player/?rid=${rid}&plat=${regex.exec(path)?.[1]}`)
   }
 
   return (
@@ -68,7 +70,7 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                       priority
                       width='0'
                       height='0'
-                      className="min-w-full h-full"
+                      className="min-w-full h-full object-cover"
                       alt={room.userName} />
                     <div className='flex items-center absolute bottom-0 right-0 p-[2px] text-sm rounded font-medium bg-secondary/80'>
                       <Flame size={16} /> {onlineConvert(room.online)}

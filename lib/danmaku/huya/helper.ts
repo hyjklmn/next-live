@@ -80,7 +80,7 @@ export const getGiftMsg = (packet: { code?: number; body?: GiftMsg }): Gift => {
 export const getCommetMsg = (packet: { code?: number; body?: Record<string, any> }): Comment => {
   const {
     code = -1,
-    body: { sContent, tUserInfo: { lUid, sNickName, iGender } = {} as Record<string, any> } = {} as Record<string, any>,
+    body: { sContent, tBulletFormat: { iFontColor }, tUserInfo: { lUid, sNickName, iGender } = {} as Record<string, any> } = {} as Record<string, any>,
   } = packet
 
   return {
@@ -96,5 +96,6 @@ export const getCommetMsg = (packet: { code?: number; body?: Record<string, any>
     ts: Date.now(),
     commonType: -1,
     uuid: uuid(),
+    color: iFontColor === -1 ? '#ffffff' : `#${iFontColor.toString(16)}`,
   }
 }

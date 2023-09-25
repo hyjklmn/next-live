@@ -176,10 +176,7 @@ async function getHyPlayQualites(detail: LiveRoomDetail) {
   return Promise.resolve(qualities);
 }
 async function getHyPlayUrls(detail: LiveRoomDetail, quality: LivePlayQuality): Promise<string[]> {
-  console.log(detail);
-  console.log(quality);
-
-  return quality.data;
+  return quality.data as string[];
 }
 
 async function getHyRoomDetail(roomId: string) {
