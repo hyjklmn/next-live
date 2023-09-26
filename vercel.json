@@ -11,6 +11,26 @@
     {
       "source": "/adyu/(.*)",
       "destination": "/api/proxy"
+    },
+    {
+      "source": "/hy/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/lhy/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/mhy/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/shy/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/uhy/(.*)",
+      "destination": "/api/proxy"
     }
   ]
  }
