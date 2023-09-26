@@ -72,7 +72,15 @@ const devProxy = {
             '^/uhy': ''
         },
         changeOrigin: true,
-    }
+    },
+    //bilibili
+    '/bili': {
+        target: 'https://api.live.bilibili.com',
+        pathRewrite: {
+            '^/bili': ''
+        },
+        changeOrigin: true,
+    },
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000

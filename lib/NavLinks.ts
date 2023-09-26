@@ -11,7 +11,7 @@ export const NavLinks = [
 
   },
   {
-    url: '/bilibili',
+    url: '/blbl',
     title: '哔哩哔哩',
     key: 3
 

@@ -1,7 +1,7 @@
 type LiveCategory = {
   id: string
   name: string
-  children: Array[]
+  children: LiveSubCategory[]
 }[]
 type LiveSubCategory = {
   pic: string
