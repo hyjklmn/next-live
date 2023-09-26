@@ -11,14 +11,14 @@ export const NavLinks = [
 
   },
   {
-    url: '/douyin',
-    title: '抖音',
+    url: '/bilibili',
+    title: '哔哩哔哩',
     key: 3
 
   },
   {
-    url: '/bilibili',
-    title: '哔哩哔哩',
+    url: '/douyin',
+    title: '抖音',
     key: 4
   },
 ]

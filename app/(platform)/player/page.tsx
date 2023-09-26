@@ -147,12 +147,15 @@ function App() {
     }
 
     return () => {
-      // douyuDM.onMessage = undefined
-      // douyuDM.stop()
+      if (douyuDM) {
+        douyuDM.stop()
+      }
+
       if (hy.current) {
         hy.current.exit()
         hy.current.removeAllListeners()
       }
+      // artRef.current?.destroy(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

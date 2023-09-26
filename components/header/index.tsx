@@ -23,7 +23,6 @@ function NavItem({ href, children, }: {
   children: React.ReactNode
 }) {
   const isActive = usePathname() === href
-
   return (
     <li>
       <Link

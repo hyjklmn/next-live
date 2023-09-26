@@ -52,7 +52,6 @@ export default class DouYuDanmaku {
   }
 
   stop() {
-    this.WebScoketUtils!.onMessage = undefined;
     this.onClose = undefined;
     if (this.WebScoketUtils) {
       this.WebScoketUtils.close();
