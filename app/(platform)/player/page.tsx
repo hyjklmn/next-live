@@ -19,10 +19,8 @@ function App() {
   const artRef = useRef<Artplayer>()
   const douyuDM = new DouYuDanmaku()
   const [roomDetail, setRoomDetail] = useState<LiveRoomDetail>()
-  //   const [qualities, setQualities] = useState<{ quality: string; data: any; }[]>([])
-  //   const [urls, setUrls] = useState<string[]>([])
   const [options, setOptions] = useState<Option>()
-
+  const hy = useRef() as any
   async function initDouyu() {
     const details = await getRoomDetail(rid)
     const quality = await getPlayQualities(details)
@@ -30,8 +28,6 @@ function App() {
     setTimeout(() => {
       setRoomDetail(details)
       let arr: { url: string, html: string, default?: boolean }[] = []
-      // setQualities(preState => [...preState, ...quality])
-      // setUrls(preState => [...preState, ...cdns])
       if (cdns.length <= 3) {
         for (let i = 0; i < cdns.length; i++) {
           arr.push({
@@ -39,7 +35,6 @@ function App() {
             html: ''
           })
         }
-
       } else {
         for (let i = 0; i < cdns.length; i += 3) {
           arr.push({
@@ -48,13 +43,13 @@ function App() {
           })
         }
       }
-      for (let k = 0; k < quality.length; k++) {
-        arr[k]['html'] = quality[k].quality
-      }
-      arr[0]['default'] = true
+      // for (let k = 0; k < quality.length; k++) {
+      //   arr[k]['html'] = quality[k].quality
+      // }
+      // arr[0]['default'] = true
       setOptions({
         container: '',
-        url: arr[1].url,
+        url: arr[0].url,
         autoplay: true,
         quality: arr,
         isLive: true,
@@ -71,7 +66,6 @@ function App() {
           })
         ]
       })
-
       // 弹幕
       douyuDM.start(rid)
       douyuDM.onMessage = (msg) => {
@@ -83,7 +77,7 @@ function App() {
           });
         }
       }
-    }, 1000);
+    }, 500);
   }
 
   async function initHuya() {
@@ -109,8 +103,8 @@ function App() {
         })
       ]
     })
-    const hy = new HuYaDanmaku(details.roomId);
-    hy.addListener('message', (msg) => {
+
+    hy.current.addListener('message', (msg: { data: any; color: any; }) => {
       if (artRef.current) {
         artRef.current.plugins.artplayerPluginDanmuku.emit({
           text: msg.data,
@@ -126,7 +120,6 @@ function App() {
     if (flvjs.isSupported()) {
       if (art.flv) art.flv.destroy();
       const flv = flvjs.createPlayer({
-        isLive: true,
         type: 'flv',
         url,
       },
@@ -146,16 +139,21 @@ function App() {
   }
   useEffect(() => {
     if (platform === 'huya') {
+      hy.current = new HuYaDanmaku(rid)
       initHuya()
     }
     if (platform === 'douyu') {
       initDouyu()
     }
 
-    // return () => {
-    //   douyuDM.onMessage = undefined
-    //   douyuDM.stop()
-    // }
+    return () => {
+      // douyuDM.onMessage = undefined
+      // douyuDM.stop()
+      if (hy.current) {
+        hy.current.exit()
+        hy.current.removeAllListeners()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

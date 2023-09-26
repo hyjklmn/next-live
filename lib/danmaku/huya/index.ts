@@ -147,11 +147,12 @@ export default class DouYuDanmaku extends Client {
               const mapStream = new TargetFn()
               mapStream.readFrom(stream)
               let message: Gift | Comment | undefined
-              if (mapStream?.sPropsName) {
-                message = getGiftMsg({ code, body: mapStream as any })
-              } else if (mapStream.body?.sPropsName) {
-                message = getGiftMsg(mapStream)
-              } else if (mapStream.sContent) {
+              // if (mapStream?.sPropsName) {
+              //   message = getGiftMsg({ code, body: mapStream as any })
+              // } else if (mapStream.body?.sPropsName) {
+              //   message = getGiftMsg(mapStream)
+              // } else  //礼物
+              if (mapStream.sContent) {
                 message = getCommetMsg({ code, body: mapStream })
               }
               if (message && !cachedMsg(lMsgId)) {
@@ -238,8 +239,6 @@ export default class DouYuDanmaku extends Client {
       this.exit()
       return
     }
-    console.log(this.isLogin);
-
     const currTime = Date.now()
     if (currTime - this.startTime > 30 * 1000 && !this.isLogin) {
       console.info(this.roomInfo() + '登录超时')
