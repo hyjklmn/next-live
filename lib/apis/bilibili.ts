@@ -27,48 +27,29 @@ async function getBlCategores() {
   return categories
 }
 
-async function getSubCategories(id: string) {
-  const result = await fetch(`/dyu/japi/weblist/api/getC2List?shortName=${id}&offset=0&limit=200`)
-  if (!result.ok) {
-    throw new Error(result.statusText);
-  }
-  let sub: LiveSubCategory[] = []
-  const data: { data: { total: number, list: [] }, error: number, message: string } = await result.json()
-  data.data.list.forEach(item => {
-    sub.push({
-      pic: item["squareIconUrlW"],
-      id: item["cid2"],
-      parentId: id,
-      name: item["cname2"],
-    })
-  })
-  return sub
-}
+async function getBlRecommendRooms(page = 1) {
+  const result = await fetch(`/bili/xlive/web-interface/v1/second/getListByArea?platform=web&sort=online&page_size=30&page=${page}`, {
 
-async function getCategoryRooms(subId: LiveSubCategory['id'], page = 1) {
-  const result = await fetch(`/dyu/gapi/rkc/directory/mixList/2_${subId}/page=${page}`,)
+  })
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
-  const { data }: { data: DouYuListResult } = await result.json()
-  data.rl = data.rl.filter((l: { type: number; }) => {
-    return l.type == 1
-  })
-  const roomItems = joinRooms(data)
-  const hasMore = page < data.pgcnt
+  const { data } = await result.json()
+  const roomItems = joinRooms(data.list)
+  const hasMore = data.list.length !== 0
   return liveResult(hasMore, roomItems)
 }
 
-async function getRecommendRooms(page = 1) {
-  const result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
-  if (!result.ok) {
-    throw new Error('Failed to fetch data')
-  }
-  const { data }: { data: DouYuListResult } = await result.json()
-  const roomItems = joinRooms(data)
-  let hasMore = page < data.pgcnt
-  return liveResult(hasMore, roomItems)
-}
+// async function getRecommendRooms(page = 1) {
+//   const result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
+//   if (!result.ok) {
+//     throw new Error('Failed to fetch data')
+//   }
+//   const { data }: { data: DouYuListResult } = await result.json()
+//   const roomItems = joinRooms(data)
+//   let hasMore = page < data.pgcnt
+//   return liveResult(hasMore, roomItems)
+// }
 
 async function searchRooms(keyword: string, page = 1) {
   const did = generateRandomHexString(32)
@@ -214,19 +195,16 @@ async function getPlayUrls(roomDetail: LiveRoomDetail, qualities: { quality: str
   return urls
 }
 
-function joinRooms(list: DouYuListResult) {
-  list.rl = list.rl.filter((l: { type: number; }) => {
-    return l.type == 1
-  })
+function joinRooms(list: { roomid: string; title: string; uname: string; cover: string; online: string; face: string; }[]) {
   const roomItem: DouYuLiveRoom = []
-  list.rl.forEach((l: { [x: string]: any; }) => {
+  list.forEach((l: { roomid: string; title: string; uname: string; cover: string; online: string; face: string; }) => {
     roomItem.push({
-      roomId: l['rid'],
-      title: l['rn'],
-      userName: l['nn'],
-      cover: l['rs16'],
-      online: l['ol'],
-      avatar: `https://apic.douyucdn.cn/upload/${l['av']}_small.jpg`
+      roomId: l.roomid,
+      title: l.title,
+      userName: l.uname,
+      cover: l.cover + '@400w.jpg',
+      online: l.online ?? 0,
+      avatar: l.face
     })
   });
   return roomItem
@@ -250,5 +228,5 @@ function replaceEval(html: string) {
   return html.replace(pattern, "strc;");
 }
 
-export { getBlCategores, getSubCategories, getCategoryRooms, getRecommendRooms, searchRooms, searchAnchors }
+export { getBlCategores, getBlRecommendRooms, searchRooms, searchAnchors }
 export { getRoomDetail, getPlayArgs, getPlayQualities, getPlayUrls, getPlayUrl }

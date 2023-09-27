@@ -33,7 +33,7 @@ export default function Categories() {
 
   return (
     <>
-      <meta name='referer' content='no-referrer' />
+      <meta name='referrer' content='no-referrer' />
       <div className="flex justify-center sticky top-1 left-0 my-2 text-sm md:text-base font-medium m-auto z-10">
         <nav className="flex items-center space-x-3 md:space-x-6 p-2 border-2 rounded-full bg-background">
           {
