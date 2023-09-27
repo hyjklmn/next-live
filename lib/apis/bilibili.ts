@@ -28,9 +28,7 @@ async function getBlCategores() {
 }
 
 async function getBlRecommendRooms(page = 1) {
-  const result = await fetch(`/bili/xlive/web-interface/v1/second/getListByArea?platform=web&sort=online&page_size=30&page=${page}`, {
-
-  })
+  const result = await fetch(`/bili/xlive/web-interface/v1/second/getListByArea?platform=web&sort=online&page_size=30&page=${page}`)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
@@ -40,16 +38,26 @@ async function getBlRecommendRooms(page = 1) {
   return liveResult(hasMore, roomItems)
 }
 
-// async function getRecommendRooms(page = 1) {
-//   const result = await fetch(`/dyu/japi/weblist/apinc/allpage/6/${page}`)
-//   if (!result.ok) {
-//     throw new Error('Failed to fetch data')
-//   }
-//   const { data }: { data: DouYuListResult } = await result.json()
-//   const roomItems = joinRooms(data)
-//   let hasMore = page < data.pgcnt
-//   return liveResult(hasMore, roomItems)
-// }
+async function getBlCategoryRooms(pid: LiveSubCategory['parentId'], id: LiveSubCategory['id'], page = 1) {
+  const result = await fetch(`/bili/xlive/web-interface/v1/second/getList?platform=web&parent_area_id=${pid}&area_id=${id}&sort=''&page=${page}`)
+  if (!result.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  const { data } = await result.json()
+  const hasMore = data.has_more === 1
+  const roomItems: DouYuLiveRoom = []
+  data.list.forEach((item: any) => {
+    roomItems.push({
+      roomId: item.roomid,
+      title: item.title,
+      cover: item.cover + '@400w.jpg',
+      userName: item.uname,
+      online: item.online ?? 0,
+      avatar: item.face
+    })
+  });
+  return liveResult(hasMore, roomItems)
+}
 
 async function searchRooms(keyword: string, page = 1) {
   const did = generateRandomHexString(32)
@@ -228,5 +236,5 @@ function replaceEval(html: string) {
   return html.replace(pattern, "strc;");
 }
 
-export { getBlCategores, getBlRecommendRooms, searchRooms, searchAnchors }
+export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchRooms, searchAnchors }
 export { getRoomDetail, getPlayArgs, getPlayQualities, getPlayUrls, getPlayUrl }

@@ -47,7 +47,7 @@ export default function Categories() {
         {
           subCategory.map(sub => {
             return (
-              <Link href={`${pathName}/${sub.id}`} key={sub.id} className='border text-center rounded-lg p-3  hover:scale-105 hover:border-gray-600 hover:shadow-sm transition-all'>
+              <Link href={`${pathName}/${sub.parentId}/${sub.id}`} key={sub.id} className='border text-center rounded-lg p-3  hover:scale-105 hover:border-gray-600 hover:shadow-sm transition-all'>
                 <figure className='min-h-[100px]'>
                   <Image loader={imageLoader} src={sub.pic}
                     priority
