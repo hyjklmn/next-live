@@ -81,6 +81,16 @@ const devProxy = {
         },
         changeOrigin: true,
     },
+    '/abili': {
+        target: 'https://api.bilibili.com',
+        pathRewrite: {
+            '^/abili': ''
+        },
+        changeOrigin: true,
+        onProxyReq: function(proxyReq, req, res) {
+            proxyReq.setHeader('Cookie', 'buvid3=infoc;');
+        }
+    },
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000

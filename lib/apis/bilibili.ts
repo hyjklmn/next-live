@@ -15,7 +15,7 @@ async function getBlCategores() {
         id: subItem.id,
         name: subItem.name ?? '',
         parentId: subItem.parent_id ?? '',
-        pic: subItem.pic ?? "" + '@100w.png'
+        pic: subItem.pic + '@100w.png' ?? "" + '@100w.png'
       })
     }
     categories.push({
@@ -59,48 +59,47 @@ async function getBlCategoryRooms(pid: LiveSubCategory['parentId'], id: LiveSubC
   return liveResult(hasMore, roomItems)
 }
 
-async function searchRooms(keyword: string, page = 1) {
-  const did = generateRandomHexString(32)
-  const result = await fetch(`/dyu/japi/search/api/searchShow?kw=${keyword}&page=${page}&pageSize=20`, {})
-  console.log(did);
-
+async function searchBlRooms(keyword: string, page = 1) {
+  const result = await fetch(`/abili/x/web-interface/search/type?context=&search_type=live&cover_type=user_cover&order=&keyword=${keyword}&category_id=&__refresh__=&_extra=&highlight=0&single_column=0&page=${page}`)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
   const data = await result.json()
-  if (data.error !== 0) {
-    return
-  }
   const roomItems: DouYuLiveRoom = []
-  data.data.relateShow.forEach((l: { [x: string]: any; }) => {
+
+  data.data.result.live_room.forEach((item: {
+    uface?: string; title: string; roomid: string; uname: string; cover: string; online: string;
+  }) => {
+    let title = item.title
+    title = title.replace(/<.*?em.*?>/g, "");
     roomItems.push({
-      roomId: l['rid'],
-      title: l['roomName'],
-      userName: l['nickName'],
-      cover: l['roomSrc'],
-      online: l['hot'],
+      roomId: item.roomid,
+      title: title,
+      userName: item.uname,
+      cover: `https:${item.cover}@400w.jpg`,
+      online: item.online ?? 0,
+      avatar: `https:${item.uface}@400w.jpg`
     })
   });
-  let hasMore = data.data.relateShow.length !== 0
+  let hasMore = roomItems.length >= 40
   return liveResult(hasMore, roomItems)
 }
 
-async function searchAnchors(keyword: string, page = 1) {
-  const result = await fetch(`/dyu/japi/search/api/searchUser?kw=${keyword}&page=${page}&pageSize=20&filterType=1`)
+async function searchBlAnchors(keyword: string, page = 1) {
+  const result = await fetch(`/abili/x/web-interface/search/type?context=&search_type=live_user&cover_type=user_cover&order=&keyword=${keyword}&category_id=&__refresh__=&_extra=&highlight=0&single_column=0&page=${page}`)
   const data = await result.json()
-  if (data.error !== 0) {
-    return
-  }
   const anchorItems: DouYuSearchAnchorResult[] = []
-  data.data.relateUser.forEach((anchor: DouYuAnchorInfo) => {
+  data.data.result.forEach((anchor: { uname: string; roomid: string; uface: string; is_live: string; }) => {
+    let title = anchor.uname
+    title = title.replace(/<.*?em.*?>/g, "");
     anchorItems.push({
-      roomId: anchor.anchorInfo.rid,
-      avatar: anchor.anchorInfo.avatar,
-      userName: anchor.anchorInfo.nickName,
-      liveStatus: anchor.anchorInfo.isLive
+      roomId: anchor.roomid,
+      avatar: `https://${anchor.uface}@400w.jpg`,
+      userName: anchor.uname,
+      liveStatus: anchor.is_live
     })
   });
-  let hasMore = data.data.relateUser.length !== 0
+  let hasMore = anchorItems.length >= 40
   return LiveSearchAnchorResult(hasMore, anchorItems)
 }
 
@@ -236,5 +235,5 @@ function replaceEval(html: string) {
   return html.replace(pattern, "strc;");
 }
 
-export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchRooms, searchAnchors }
+export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchBlRooms, searchBlAnchors }
 export { getRoomDetail, getPlayArgs, getPlayQualities, getPlayUrls, getPlayUrl }
