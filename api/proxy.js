@@ -58,6 +58,19 @@ module.exports = (req, res) => {
       '^/uhy': ''
     }
   }
+  //bilibili
+  if (req.url.startsWith('/bili')) {
+    target = 'https://api.live.bilibili.com'
+    rewtire = {
+      '^/bili': ''
+    }
+  }
+  if (req.url.startsWith('/abili')) {
+    target = 'https://api.bilibili.com'
+    rewtire = {
+      '^/abili': ''
+    }
+  }
   // 创建代理对象并转发请求
   createProxyMiddleware({
     target,

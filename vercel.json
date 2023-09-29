@@ -31,6 +31,14 @@
     {
       "source": "/uhy/(.*)",
       "destination": "/api/proxy"
+    },
+    {
+      "source": "/bili/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/abili/(.*)",
+      "destination": "/api/proxy"
     }
   ]
  }
