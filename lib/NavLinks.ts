@@ -5,7 +5,7 @@ export const NavLinks = [
     key: 1
   },
   {
-    url: '/huya',
+    url: '/hy',
     title: '虎牙',
     key: 2
 

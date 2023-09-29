@@ -27,7 +27,7 @@ export default function Page() {
   }, [])
   return (
     <div>
-      <Link href='/huya/categories'>虎牙 categories</Link>
+      <Link href='/hy/categories'>虎牙 categories</Link>
       <RoomCard list={recommend.roomItems} />
     </ div>
   )
