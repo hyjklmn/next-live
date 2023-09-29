@@ -32,10 +32,10 @@ const devProxy = {
         changeOrigin: true
     },
     // huya
-    '/hy': {
+    '/ahy': {
         target: 'https://www.huya.com/cache.php',
         pathRewrite: {
-            '^/hy': ''
+            '^/ahy': ''
         },
         changeOrigin: true
     },

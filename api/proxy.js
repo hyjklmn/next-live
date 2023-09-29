@@ -28,10 +28,10 @@ module.exports = (req, res) => {
     }
   }
   //huya
-  if (req.url.startsWith('/hy')) {
+  if (req.url.startsWith('/ahy')) {
     target = 'https://www.huya.com/cache.php'
     rewtire = {
-      '^/hy': ''
+      '^/ahy': ''
     }
   }
   if (req.url.startsWith('/lhy')) {

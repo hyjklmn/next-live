@@ -13,7 +13,7 @@
       "destination": "/api/proxy"
     },
     {
-      "source": "/hy/(.*)",
+      "source": "/ahy/(.*)",
       "destination": "/api/proxy"
     },
     {
