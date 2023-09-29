@@ -22,7 +22,7 @@ function NavItem({ href, children, }: {
   href: string
   children: React.ReactNode
 }) {
-  const isActive = usePathname() === href
+  const isActive = usePathname().indexOf(href) !== -1
   return (
     <li>
       <Link
