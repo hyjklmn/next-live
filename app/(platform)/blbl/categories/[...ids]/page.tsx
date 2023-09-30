@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
 import { useRouter } from 'next/navigation'
-import { getBlCategoryRooms, getBlRoomDetail } from '@/lib/apis/bilibili'
+import { getBlCategoryRooms, getBlRoomDetail, getBlPlayQualities } from '@/lib/apis/bilibili'
 type Params = {
   ids: string[]
 }
@@ -19,10 +19,16 @@ export default function CategoryRoomPage({ params }: { params: Params }) {
   async function categoryRooms() {
     const data = await getBlCategoryRooms(pid, id)
     setRoomData(data)
+
+    let a = await getBlRoomDetail('22908869')
+    console.log(a);
+
+    getBlPlayQualities(a)
+
+
   }
   useEffect(() => {
     categoryRooms()
-    getBlRoomDetail('7777')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   if (params.ids.length < 2) {

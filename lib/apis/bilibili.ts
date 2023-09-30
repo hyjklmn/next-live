@@ -134,32 +134,22 @@ async function getBlRoomDetail(roomId: string): Promise<LiveRoomDetail> {
   return liveRoomDetail
 }
 
-async function getPlayQualities(roomDetail: LiveRoomDetail) {
-  let params = roomDetail.data + "&cdn=&rate=-1&ver=Douyu_223061205&iar=1&ive=1&hevc=0&fa=0"
-  const result = await fetch(`/dyu/lapi/live/getH5Play/${roomDetail.roomId}`, {
-    method: 'POST',
-    body: params,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded'
-    }
-  })
+async function getBlPlayQualities(roomDetail: LiveRoomDetail) {
+  const result = await fetch(`/bili/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${roomDetail.roomId}&protocol=0,1&format=0,1,2&codec=0,1&platform=web`)
   const data = await result.json()
+  console.log(data);
 
+  let qualitiesMap: { [key: number]: string } = {};
   let qualities: { quality: string, data: any }[] = []
-
-  let cdns: string[] = []
-
-  for (let item in data.data.cdnsWithName) {
-    cdns.push(data.data.cdnsWithName[item].cdn)
+  for (let item of data.data.playurl_info.playurl.g_qn_desc) {
+    qualitiesMap[parseInt(item["qn"].toString()) || 0] = item["desc"].toString();
   }
-  for (let item in data.data.multirates) {
-    qualities.push({
-      quality: data.data.multirates[item].name,
-      data: {
-        rate: data.data.multirates[item].rate,
-        cdns
-      }
-    })
+  for (let item of data.data.playurl_info.playurl.stream[0].format[0].codec[0].accept_qn) {
+    let qualityItem = {
+      quality: qualitiesMap[item] || "未知清晰度",
+      data: item,
+    };
+    qualities.push(qualityItem);
   }
   return qualities
 }
@@ -215,4 +205,4 @@ async function getBuvid() {
 }
 
 export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchBlRooms, searchBlAnchors }
-export { getBlRoomDetail, getPlayQualities, getPlayUrls, getPlayUrl }
+export { getBlRoomDetail, getBlPlayQualities, getPlayUrls, getPlayUrl }
