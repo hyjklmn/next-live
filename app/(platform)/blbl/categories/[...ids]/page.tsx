@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
 import { useRouter } from 'next/navigation'
-import { getBlCategoryRooms } from '@/lib/apis/bilibili'
+import { getBlCategoryRooms, getBlRoomDetail } from '@/lib/apis/bilibili'
 type Params = {
   ids: string[]
 }
@@ -22,6 +22,7 @@ export default function CategoryRoomPage({ params }: { params: Params }) {
   }
   useEffect(() => {
     categoryRooms()
+    getBlRoomDetail('7777')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   if (params.ids.length < 2) {

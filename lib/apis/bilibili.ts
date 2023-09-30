@@ -103,48 +103,35 @@ async function searchBlAnchors(keyword: string, page = 1) {
   return LiveSearchAnchorResult(hasMore, anchorItems)
 }
 
-async function getRoomDetail(roomId: string): Promise<LiveRoomDetail> {
-  const result = await fetch(`/mdyu/${roomId}/index.pageContext.json`)
+async function getBlRoomDetail(roomId: string): Promise<LiveRoomDetail> {
+  const result = await fetch(`/bili/xlive/web-room/v1/index/getH5InfoByRoom?room_id=${roomId}`)
+  const roomDanmakuResult = await fetch(`/bili/xlive/web-room/v1/index/getDanmuInfo?id=${roomId}`)
   const data = await result.json()
-  let roomInfo = data.pageProps.room.roomInfo.roomInfo
-  const jsEncResult = await fetch(`/dyu/swf_api/homeH5Enc?rids=${roomId}`)
-  let encodeData = await jsEncResult.json()
-  let crptext = encodeData.data[`room${roomId}`]
-  const args = await getPlayArgs(crptext, roomId)
+  const danmakuData = await roomDanmakuResult.json()
+  const buvid = await getBuvid()
+  const serverHosts: string[] = (danmakuData.data.host_list as string[])
+    .map<string>((e: any) => e["host"].toString());
 
   let liveRoomDetail: LiveRoomDetail = {
-    roomId: roomInfo.rid,
-    title: roomInfo.roomName,
-    userName: roomInfo.nickname,
-    userAvatar: roomInfo.avatar,
-    cover: roomInfo.roomSrc,
-    online: roomInfo.hn,
-    introduction: "",
-    notice: roomInfo.notice,
-    status: roomInfo.isLive,
-    danmakuData: roomInfo.rid,
+    roomId: data.data.room_info.room_id,
+    title: data.data.room_info.title,
+    userName: data.data.anchor_info.base_info.uname,
+    userAvatar: data.data.anchor_info.base_info.face + '@100w.jpg',
+    cover: data.data.room_info.cover,
+    online: data.data.room_info.online ?? 0,
+    introduction: data.data.room_info.description,
+    notice: "",
+    status: data.data.room_info.live_status ?? 0,
+    danmakuData: {
+      roomId: data.data.room_info.room_id ?? 0,
+      token: danmakuData.data.token,
+      serverHosts: serverHosts.length !== 0 ? serverHosts[0] : "broadcastlv.chat.bilibili.com",
+      buvid: buvid
+    },
     url: `https://www.douyu.com/${roomId}`,
-    data: args,
+    data: 1,
   }
   return liveRoomDetail
-}
-
-async function getPlayArgs(html: string, rid: string) {
-  let h = replaceEval(extractFunction(html))
-  let d = { html: h, rid: rid }
-
-  const result = await fetch('/adyu/api/AllLive/DouyuSign', {
-    method: 'POST',
-    body: JSON.stringify(d),
-    headers: {
-      'content-type': 'application/json'
-    }
-  })
-  const data = await result.json()
-  if (data.code === 0) {
-    return data.data
-  }
-  return ''
 }
 
 async function getPlayQualities(roomDetail: LiveRoomDetail) {
@@ -217,23 +204,15 @@ function joinRooms(list: { roomid: string; title: string; uname: string; cover: 
   return roomItem
 }
 
-function generateRandomHexString(length: number) {
-  const hexCharacters = "0123456789abcdef";
-  const randomHexArray = Array(length).fill("");
-  for (let i = 0; i < length; i++) {
-    randomHexArray[i] = hexCharacters[Math.floor(Math.random() * 16)];
+async function getBuvid() {
+  try {
+    const result = await fetch(`/abili/x/frontend/finger/spi`)
+    const data = await result.json()
+    return data.data.b_3
+  } catch (error) {
+    return ''
   }
-  return randomHexArray.join("");
-}
-function extractFunction(html: string) {
-  const pattern = /(vdwdae325w_64we[\s\S]*function ub98484234[\s\S]*?)function/g;
-  const match = pattern.exec(html);
-  return match && match[1] || "";
-}
-function replaceEval(html: string) {
-  const pattern = /eval.*?;/g;
-  return html.replace(pattern, "strc;");
 }
 
 export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchBlRooms, searchBlAnchors }
-export { getRoomDetail, getPlayArgs, getPlayQualities, getPlayUrls, getPlayUrl }
+export { getBlRoomDetail, getPlayQualities, getPlayUrls, getPlayUrl }
