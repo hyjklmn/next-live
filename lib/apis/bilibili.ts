@@ -153,28 +153,31 @@ async function getBlPlayQualities(roomDetail: LiveRoomDetail) {
   }
   return qualities
 }
-async function getPlayUrl(roomId: string, args: string, rate: number, cdn: string) {
-  args += `&cdn=${cdn}&rate=${rate}`
-  const result = await fetch(`/dyu/lapi/live/getH5Play/${roomId}`, {
-    method: 'POST',
-    body: args,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded'
-    }
-  })
-  const data = await result.json()
-  const url = `${data.data.rtmp_url}/${data.data.rtmp_live}`
-  return url
-}
 
-async function getPlayUrls(roomDetail: LiveRoomDetail, qualities: { quality: string, data: any }[]) {
-  const args = roomDetail.data
+async function getBlPlayUrls(roomDetail: LiveRoomDetail, qualities: { quality: string, data: any }) {
+  const result = await fetch(`/bili/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${roomDetail.roomId}&protocol=0,1&format=0,2&codec=0&platform=web&qn=${qualities.data}`)
+  const data = await result.json()
   const urls: string[] = []
-  qualities.forEach((quality: any) => {
-    quality.data.cdns.forEach(async (cdn: string) => {
-      let url = await getPlayUrl(roomDetail.roomId, args, quality.data.rate, cdn)
-      urls.push(url)
-    })
+  const streamList = data.data.playurl_info.playurl.stream
+  for (let streamItem of streamList) {
+    const formatList = streamItem.format
+    for (let formatItem of formatList) {
+      const codecList = formatItem.codec
+      for (let codecItem of codecList) {
+        const urlList = codecItem.url_info
+        const baseUrl = codecItem.base_url
+        for (let urlItem of urlList) {
+          urls.push(`${urlItem.host}${baseUrl}${urlItem.extra}`)
+        }
+      }
+    }
+  }
+  urls.sort((a, b) => {
+    if (a.includes('mcdn')) {
+      return 1
+    } else {
+      return -1
+    }
   })
   return urls
 }
@@ -205,4 +208,4 @@ async function getBuvid() {
 }
 
 export { getBlCategores, getBlRecommendRooms, getBlCategoryRooms, searchBlRooms, searchBlAnchors }
-export { getBlRoomDetail, getBlPlayQualities, getPlayUrls, getPlayUrl }
+export { getBlRoomDetail, getBlPlayQualities, getBlPlayUrls }

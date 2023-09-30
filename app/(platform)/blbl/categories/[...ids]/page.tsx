@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
 import { useRouter } from 'next/navigation'
-import { getBlCategoryRooms, getBlRoomDetail, getBlPlayQualities } from '@/lib/apis/bilibili'
+import { getBlCategoryRooms } from '@/lib/apis/bilibili'
 type Params = {
   ids: string[]
 }
@@ -19,13 +19,6 @@ export default function CategoryRoomPage({ params }: { params: Params }) {
   async function categoryRooms() {
     const data = await getBlCategoryRooms(pid, id)
     setRoomData(data)
-
-    let a = await getBlRoomDetail('22908869')
-    console.log(a);
-
-    getBlPlayQualities(a)
-
-
   }
   useEffect(() => {
     categoryRooms()
