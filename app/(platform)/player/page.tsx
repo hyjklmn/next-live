@@ -12,6 +12,7 @@ import HuYaDanmaku from "@/lib/danmaku/huya";
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { LiveRoomDetail } from '@/lib/types/apis';
 import { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls } from '@/lib/apis/huya';
+import { getBlPlayQualities, getBlPlayUrls, getBlRoomDetail } from '@/lib/apis/bilibili';
 function App() {
   const query = useSearchParams()
   const rid = query.get('rid') as string
@@ -114,6 +115,32 @@ function App() {
       }
     })
   }
+  async function initBiliBili() {
+    const details = await getBlRoomDetail(rid)
+    const quality = await getBlPlayQualities(details)
+    const cdns = await getBlPlayUrls(details, quality[0])
+    setOptions({
+      container: '',
+      url: cdns.length > 0 ? cdns[0] : '',
+      autoplay: true,
+      // quality: quality,
+      isLive: true,
+      type: 'm3u8',
+      customType: {
+        flv: flvFunc,
+        m3u8: playM3u8
+      },
+      fullscreen: true,
+      plugins: [
+        artplayerPluginDanmuku({
+          danmuku: [],
+          speed: 10,
+          synchronousPlayback: true
+        })
+      ]
+    })
+
+  }
 
   async function flvFunc(video: HTMLMediaElement, url: string, art: any) {
     const flvjs = (await import('flv.js')).default
@@ -127,7 +154,7 @@ function App() {
           enableStashBuffer: false,
           stashInitialSize: 128,
           autoCleanupSourceBuffer: true,
-          fixAudioTimestampGap: true
+          fixAudioTimestampGap: true,
         });
       flv.attachMediaElement(video);
       flv.load();
@@ -137,13 +164,32 @@ function App() {
       art.notice.show = 'Unsupported playback format: flv';
     }
   }
+
+  async function playM3u8(video: HTMLMediaElement, url: string, art: any) {
+    const Hls = (await import('Hls.js')).default
+    if (Hls.isSupported()) {
+      if (art.hls) art.hls.destroy();
+      const hls = new Hls();
+      hls.loadSource(url);
+      hls.attachMedia(video);
+      art.hls = hls;
+      art.on('destroy', () => hls.destroy());
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = url;
+    } else {
+      art.notice.show = 'Unsupported playback format: m3u8';
+    }
+  }
   useEffect(() => {
-    if (platform === 'huya') {
+    if (platform === 'hy') {
       hy.current = new HuYaDanmaku(rid)
       initHuya()
     }
     if (platform === 'douyu') {
       initDouyu()
+    }
+    if (platform === 'blbl') {
+      initBiliBili()
     }
 
     return () => {
@@ -161,9 +207,13 @@ function App() {
   }, [])
 
   return (
-    <div className='w-full h-full'>
-      {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
-    </div>
+    <>
+      {platform === 'blbl' ? <meta name='referrer' content='no-referrer' /> : ''}
+      <div className='w-full h-full'>
+        {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
+      </div>
+    </>
+
   );
 }
 

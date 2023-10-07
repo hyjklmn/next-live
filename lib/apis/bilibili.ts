@@ -137,8 +137,6 @@ async function getBlRoomDetail(roomId: string): Promise<LiveRoomDetail> {
 async function getBlPlayQualities(roomDetail: LiveRoomDetail) {
   const result = await fetch(`/bili/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${roomDetail.roomId}&protocol=0,1&format=0,1,2&codec=0,1&platform=web`)
   const data = await result.json()
-  console.log(data);
-
   let qualitiesMap: { [key: number]: string } = {};
   let qualities: { quality: string, data: any }[] = []
   for (let item of data.data.playurl_info.playurl.g_qn_desc) {
@@ -172,6 +170,11 @@ async function getBlPlayUrls(roomDetail: LiveRoomDetail, qualities: { quality: s
       }
     }
   }
+  urls.forEach((url: string) => {
+    if (url.indexOf('flv') !== -1) {
+      urls.splice(urls.indexOf(url), 1)
+    }
+  })
   urls.sort((a, b) => {
     if (a.includes('mcdn')) {
       return 1
