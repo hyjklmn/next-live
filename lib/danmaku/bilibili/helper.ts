@@ -77,7 +77,7 @@ export const decode = (data: ArrayBuffer): DanmuPacket => {
           const parse = (s: string) => s && JSON.parse(s)
           result.body.messages = body.map(parse)
         } catch (e) {
-          console.log(e)
+          console.error(e)
         }
       }
       offset += packetLen
