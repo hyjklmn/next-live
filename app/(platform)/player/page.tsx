@@ -7,6 +7,7 @@ import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import Option from 'artplayer/types/option';
 import DouYuDanmaku from '@/lib/danmaku/douyu';
 import HuYaDanmaku from "@/lib/danmaku/huya";
+import BiliBiliDanmaku from "@/lib/danmaku/bilibili";
 
 
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
@@ -22,6 +23,7 @@ function App() {
   const [roomDetail, setRoomDetail] = useState<LiveRoomDetail>()
   const [options, setOptions] = useState<Option>()
   const hy = useRef() as any
+  const bili = useRef() as any
   async function initDouyu() {
     const details = await getRoomDetail(rid)
     const quality = await getPlayQualities(details)
@@ -140,6 +142,16 @@ function App() {
       ]
     })
 
+    bili.current.addListener('message', (msg: { data: any; color: any; }) => {
+      if (artRef.current) {
+        artRef.current.plugins.artplayerPluginDanmuku.emit({
+          text: msg.data,
+          border: false,
+          color: msg.color
+        });
+      }
+    })
+
   }
 
   async function flvFunc(video: HTMLMediaElement, url: string, art: any) {
@@ -189,6 +201,7 @@ function App() {
       initDouyu()
     }
     if (platform === 'blbl') {
+      bili.current = new BiliBiliDanmaku(rid)
       initBiliBili()
     }
 
@@ -200,6 +213,10 @@ function App() {
       if (hy.current) {
         hy.current.exit()
         hy.current.removeAllListeners()
+      }
+      if (bili.current) {
+        bili.current.exit()
+        bili.current.removeAllListeners()
       }
       // artRef.current?.destroy(false);
     }
