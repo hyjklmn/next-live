@@ -215,7 +215,7 @@ function App() {
         hy.current.removeAllListeners()
       }
       if (bili.current) {
-        bili.current.exit()
+        bili.current.stop()
         bili.current.removeAllListeners()
       }
       // artRef.current?.destroy(false);
