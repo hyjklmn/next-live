@@ -6,7 +6,8 @@ const headers: { [key: string]: string } = {
   "Authority": "live.douyin.com",
   "credentials": 'include',
   "withCredentials": "true",
-  // "Referer": "https://live.douyin.com",
+  "Referer": "https://live.douyin.com",
+  'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51",
 };
 
 async function getRequestHeaders() {
@@ -62,6 +63,39 @@ async function getDyinCategores() {
   return categories
 }
 
+async function getCategoryRooms(category: LiveSubCategory, page = 1) {
+  const ids = category.id.split(',');
+  const partitionId = ids[0];
+  const partitionType = ids[1];
+  const queryParameters = new URLSearchParams({
+    "aid": '6383',
+    "app_name": "douyin_web",
+    "live_id": '1',
+    "device_platform": "web",
+    "count": '30',
+    "offset": ((page - 1) * 30).toString(),
+    "partition": partitionId,
+    "partition_type": partitionType,
+    "req_from": '2'
+  })
+  const result = await fetch(`/dyin/webcast/web/partition/detail/room/?${queryParameters.toString()}`)
+  const data = await result.json()
+  const hasMore = data.data.data.length >= 30
+  const roomItems: DouYuLiveRoom = []
+  for (const item of data.data.data) {
+    roomItems.push({
+      roomId: item.web_rid,
+      title: item.room.title,
+      cover: item.room.cover.url_list[0],
+      userName: item.room.owner.nickname,
+      online: item.room.room_view_stats.display_value ?? 0,
+      avatar: item.room.owner.avatar_thumb.url_list[0]
+    })
+  }
+  return liveResult(hasMore, roomItems)
+
+}
+
 async function getRecommendRooms(page = 1) {
   const offset = (page - 1) * 20
   const result = await fetch(`/dyin/webcast/web/partition/detail/room/?aid=6383&app_name=douyin_web&live_id=1&device_platform=web&count=20&offset=${offset}&partition=720&partition_type=1`, {
@@ -84,6 +118,55 @@ async function getRecommendRooms(page = 1) {
     })
   }
   return liveResult(hasMore, roomItems)
+}
+
+async function getDyinRoomDetail(roomId: string) {
+  const detail = await getRoomWebDetail(roomId)
+  const webRid = roomId;
+  const realRoomId = detail.roomStore.roomInfo.room.id_str
+  const userUniqueId = detail.userStore.odin.user_unique_id
+  const queryParameters = new URLSearchParams({
+    "aid": "6383",
+    "app_name": "douyin_web",
+    "live_id": "1",
+    "device_platform": "web",
+    "enter_from": "web_live",
+    "web_rid": webRid,
+    "room_id_str": realRoomId,
+    "enter_source": "",
+    "Room-Enter-User-Login-Ab": "0",
+    "is_need_double_stream": "false",
+    "cookie_enabled": "true",
+    "screen_width": "1980",
+    "screen_height": "1080",
+    "browser_language": "zh-CN",
+    "browser_platform": "Win32",
+    "browser_name": "Edge",
+    "browser_version": "114.0.1823.51"
+  })
+  const result = await fetch(`/dyin/webcast/room/web/enter/?${queryParameters.toString()}`)
+  const data = await result.text()
+
+
+
+
+}
+
+async function getRoomWebDetail(webRid: string) {
+  const result = await fetch(`/dyin/${webRid}`, {
+    headers: {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "Authority": "live.douyin.com",
+      "Referer": "https://live.douyin.com",
+      "Cookie": `__ac_nonce=${generateRandomString(21)}`,
+    }
+  })
+  const data = await result.text()
+  const renderDataMatch = data.match(/\{\\"state\\":\{\\"isLiveModal.*?\]\\n/);
+  const renderData = renderDataMatch ? renderDataMatch[0] : '';
+  const str = renderData.trim().replace(/\\"/g, '"').replace(/\\\\/g, '\\').replace(']\\n', '');
+  const renderDataJson = JSON.parse(str);
+  return renderDataJson.state
 }
 
 async function searchRooms(keyword: string, page = 1) {
@@ -181,4 +264,5 @@ function generateRandomString(length: number): string {
   return randomString;
 }
 
-export { getRequestHeaders, getDyinCategores, getRecommendRooms, searchRooms }
+export { getRequestHeaders, getDyinCategores, getRecommendRooms, getCategoryRooms }
+export { getDyinRoomDetail, searchRooms, }

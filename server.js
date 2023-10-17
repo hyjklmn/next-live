@@ -102,7 +102,12 @@ const devProxy = {
         pathRewrite: {
             '^/dyin': ''
         },
-        changeOrigin: true
+        changeOrigin: true,
+        onProxyReq: function(proxyReq, req, res) {
+            proxyReq.setHeader('Referer', 'https://live.douyin.com')
+            proxyReq.setHeader('Cookie', `__ac_nonce=${generateRandomString(21)}`)
+            proxyReq.setHeader('User-Agent',"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51");
+        }
     },
     '/wdyin': {
         target: 'https://www.douyin.com',
@@ -112,7 +117,7 @@ const devProxy = {
         changeOrigin: true,
         onProxyReq: function(proxyReq, req, res) {
             proxyReq.setHeader('Referer', 'https://www.douyin.com/');
-            proxyReq.setHeader('Cookie',`__ac_nonce=${generateRandomString(21)}`)
+            proxyReq.setHeader('Cookie', `__ac_nonce=${generateRandomString(21)}`)
         }
     },
     '/dysign': {
