@@ -71,6 +71,13 @@ module.exports = (req, res) => {
       '^/abili': ''
     }
   }
+  // douyin
+  if (req.url.startsWith('/dyin')) {
+    target = 'https://live.douyin.com'
+    rewtire = {
+      '^/dyin': ''
+    }
+  }
   // 创建代理对象并转发请求
   createProxyMiddleware({
     target,

@@ -91,6 +91,17 @@ const devProxy = {
             proxyReq.setHeader('Cookie', 'buvid3=infoc;');
         }
     },
+    // douyin
+    '/dyin': {
+        target: 'https://live.douyin.com',
+        pathRewrite: {
+            '^/dyin': ''
+        },
+        changeOrigin: true,
+        onProxyReq: function(proxyReq, req, res) {
+            proxyReq.setHeader('Referer', 'https://live.douyin.com');
+        }
+    }
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000

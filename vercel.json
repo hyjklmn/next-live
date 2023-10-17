@@ -39,6 +39,10 @@
     {
       "source": "/abili/(.*)",
       "destination": "/api/proxy"
+    },
+    {
+      "source": "/dyin/(.*)",
+      "destination": "/api/proxy"
     }
   ]
  }
