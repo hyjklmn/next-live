@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 
+import Hls from 'hls.js';
 import Artplayer from './player';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
 import Option from 'artplayer/types/option';
@@ -178,7 +179,6 @@ function App() {
   }
 
   async function playM3u8(video: HTMLMediaElement, url: string, art: any) {
-    const Hls = (await import('Hls.js')).default
     if (Hls.isSupported()) {
       if (art.hls) art.hls.destroy();
       const hls = new Hls();
