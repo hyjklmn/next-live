@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { getRecommendRooms } from '@/lib/apis/douyin'
+import { getRecommendRooms, getRequestHeaders, } from '@/lib/apis/douyin'
 import { LiveResult } from '@/lib/types/apis'
 import Link from 'next/link'
 import RoomCard from '@/components/RoomCard'
@@ -11,8 +11,9 @@ export default function DouYinPage() {
   })
   useEffect(() => {
     (async function () {
-      const data = await getRecommendRooms()
-      setRecommend(data)
+      // const data = await getRecommendRooms()
+      // setRecommend(data)
+      // getRequestHeaders()
     })()
   }, [])
   return (
