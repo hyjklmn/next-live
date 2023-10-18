@@ -10,20 +10,6 @@ const headers: { [key: string]: string } = {
   'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51",
 };
 
-async function getRequestHeaders() {
-  try {
-    if (headers.hasOwnProperty('cookie')) headers
-    // const result = await fetch('/dyin', { credentials: 'include', headers: headers })
-    // console.log(result);
-    const data = await axios.get('/dyin', {
-      headers: headers
-    })
-    console.log(data);
-
-  } catch (error) {
-
-  }
-}
 async function getDyinCategores() {
   const result = await fetch('/dyin/hot_live')
   const data = await result.text()
@@ -144,12 +130,13 @@ async function getDyinRoomDetail(roomId: string) {
     "browser_name": "Edge",
     "browser_version": "114.0.1823.51"
   })
-  const result = await fetch(`/dyin/webcast/room/web/enter/?${queryParameters.toString()}`)
-  const data = await result.text()
-
-
-
-
+  const result = await fetch(`/dyin/webcast/room/web/enter/?${queryParameters.toString()}`, {
+    headers: {
+      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "Authority": "live.douyin.com",
+      "Referer": "https://live.douyin.com",
+    }
+  })
 }
 
 async function getRoomWebDetail(webRid: string) {
@@ -159,6 +146,8 @@ async function getRoomWebDetail(webRid: string) {
       "Authority": "live.douyin.com",
       "Referer": "https://live.douyin.com",
       "Cookie": `__ac_nonce=${generateRandomString(21)}`,
+      "withCredentials": "true",
+      "credentials": "include",
     }
   })
   const data = await result.text()
@@ -264,5 +253,5 @@ function generateRandomString(length: number): string {
   return randomString;
 }
 
-export { getRequestHeaders, getDyinCategores, getRecommendRooms, getCategoryRooms }
+export { getDyinCategores, getRecommendRooms, getCategoryRooms }
 export { getDyinRoomDetail, searchRooms, }
