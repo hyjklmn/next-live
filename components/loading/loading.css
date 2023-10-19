@@ -1,12 +1,10 @@
-
-:root {
+.loader {
   --hue: 210;
   --size: 30px;
   --border: 5px;
   --speed: 1s;
   --blur: var(--border);
-}
-.loader {
+
   width: var(--border);
   aspect-ratio: 1;
   background: white;
