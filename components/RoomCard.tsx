@@ -49,16 +49,6 @@ export default function RoomCard(props: { list: Array<Object>, }) {
 
   return (
     <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
-      {/* <div className="flex flex-col items-center space-y-2">
-        <Skeleton className="h-[150px] w-full" />
-        <div className="flex flex-col w-full space-y-2">
-          <Skeleton className="w-full h-[30px]" />
-          <div className='flex items-center justify-between'>
-            <Skeleton className="w-[35px] h-[35px] rounded-full" />
-            <Skeleton className="w-[85%] h-[30px]" />
-          </div>
-        </div>
-      </div> */}
       {
         props.list.map((room: any, index) => {
           return (
