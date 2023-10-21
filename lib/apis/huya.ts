@@ -35,7 +35,7 @@ type LivePlayQuality = {
 }
 
 async function getHyRecommendRooms(page = 1) {
-  const result = await fetch(`/ahy?m=LiveList&do=getLiveListByPage&tagAll=0&page=${page}`)
+  const result = await fetch(`/ahy/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&page=${page}`)
   if (!result.ok) {
     throw new Error('Failed to fetch data')
   }
@@ -103,7 +103,7 @@ async function getHySubCategories(id: string) {
 }
 
 async function getHyCategoryRoom(id: string, page = 1) {
-  const result = await fetch(`/ahy?m=LiveList&do=getLiveListByPage&tagAll=0&gameId=${id}&page=${page}`)
+  const result = await fetch(`/ahy/cache.php?m=LiveList&do=getLiveListByPage&tagAll=0&gameId=${id}&page=${page}`)
   const data = await result.json()
   const roomItem: DouYuLiveRoom = []
   data.data.datas.forEach((item: {
@@ -259,7 +259,7 @@ async function getAnonymousUid() {
     "version": "2.4",
     "data": {}
   }
-  const result = await fetch('/uhy', {
+  const result = await fetch('/uhy/web/anonymousLogin', {
     method: 'POST',
     body: JSON.stringify(body),
     headers: {
@@ -268,8 +268,6 @@ async function getAnonymousUid() {
   })
   const data = await result.json()
   return data.data.uid
-
-
 }
 function getUUid(): string {
   const currentTime = Date.now();

@@ -29,7 +29,7 @@ module.exports = (req, res) => {
   }
   //huya
   if (req.url.startsWith('/ahy')) {
-    target = 'https://www.huya.com/cache.php'
+    target = 'https://www.huya.com'
     rewtire = {
       '^/ahy': ''
     }
@@ -53,7 +53,7 @@ module.exports = (req, res) => {
     }
   }
   if (req.url.startsWith('/uhy')) {
-    target = 'https://udblgn.huya.com/web/anonymousLogin'
+    target = 'https://udblgn.huya.com'
     rewtire = {
       '^/uhy': ''
     }

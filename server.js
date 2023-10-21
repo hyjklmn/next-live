@@ -33,7 +33,7 @@ const devProxy = {
     },
     // huya
     '/ahy': {
-        target: 'https://www.huya.com/cache.php',
+        target: 'https://www.huya.com',
         pathRewrite: {
             '^/ahy': ''
         },
@@ -67,7 +67,7 @@ const devProxy = {
     },
     /// 匿名登录获取uid
     '/uhy': {
-        target: 'https://udblgn.huya.com/web/anonymousLogin',
+        target: 'https://udblgn.huya.com',
         pathRewrite: {
             '^/uhy': ''
         },
