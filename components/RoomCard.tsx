@@ -2,13 +2,10 @@ import React from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Image, { ImageLoaderProps } from 'next/image'
 import { Flame } from 'lucide-react'
-import { Skeleton } from "@/components/ui/skeleton"
 
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
