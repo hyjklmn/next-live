@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import { useRouter } from 'next/navigation'
 
+import MessageAlert from '@/components/AlertMessage'
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -46,7 +47,7 @@ export default function Search() {
           <SelectValue placeholder="类型" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="房间号">房间号</SelectItem>
+          <SelectItem value="房间">房间</SelectItem>
           <SelectItem value="主播">主播</SelectItem>
         </SelectContent>
       </Select>

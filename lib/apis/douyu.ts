@@ -65,14 +65,9 @@ async function getRecommendRooms(page = 1) {
 async function searchRooms(keyword: string, page = 1) {
   const did = generateRandomHexString(32)
   const result = await fetch(`/dyu/japi/search/api/searchShow?kw=${keyword}&page=${page}&pageSize=20`, {})
-  console.log(did);
-
-  if (!result.ok) {
-    throw new Error('Failed to fetch data')
-  }
   const data = await result.json()
   if (data.error !== 0) {
-    return
+    return data.msg
   }
   const roomItems: DouYuLiveRoom = []
   data.data.relateShow.forEach((l: { [x: string]: any; }) => {
@@ -91,9 +86,6 @@ async function searchRooms(keyword: string, page = 1) {
 async function searchAnchors(keyword: string, page = 1) {
   const result = await fetch(`/dyu/japi/search/api/searchUser?kw=${keyword}&page=${page}&pageSize=20&filterType=1`)
   const data = await result.json()
-  if (data.error !== 0) {
-    return
-  }
   const anchorItems: DouYuSearchAnchorResult[] = []
   data.data.relateUser.forEach((anchor: DouYuAnchorInfo) => {
     anchorItems.push({
