@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 
 import { searchRooms, searchAnchors } from '@/lib/apis/douyu'
 import { searchBlRooms, searchBlAnchors } from '@/lib/apis/bilibili'
+import { searchHyAnchors, searchHyRooms } from '@/lib/apis/huya'
 import { LiveResult } from '@/lib/types/apis'
 import Loading from '@/components/loading'
 import RoomCard from '@/components/RoomCard'
@@ -20,10 +21,17 @@ export default function SearchPage() {
   async function douyuSearch() {
     if (type === '房间') {
       const data = await searchRooms(keyword!)
-      console.log(data);
       // setRoomList(data)
     } else {
       console.log('wip');
+    }
+  }
+  async function huyaSearch() {
+    if (type === '房间') {
+      const data = await searchHyRooms(keyword!)
+      setRoomList(data)
+    } else {
+      const data = await searchHyAnchors(keyword!)
     }
   }
   async function biliSearch() {
@@ -34,10 +42,13 @@ export default function SearchPage() {
     }
   }
   useEffect(() => {
+
     if (platform === '1') {
       douyuSearch()
     }
-    if (platform === '2') { }
+    if (platform === '2') {
+      huyaSearch()
+    }
     if (platform === '3') {
       biliSearch()
     }

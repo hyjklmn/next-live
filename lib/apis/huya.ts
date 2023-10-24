@@ -1,5 +1,5 @@
-import { liveResult } from "../LiveResult";
-import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, LiveRoomDetail } from "../types/apis";
+import { LiveSearchAnchorResult, liveResult } from "../LiveResult";
+import { LiveCategory, DouYuLiveRoom, LiveSubCategory, DouYuListResult, LiveRoomDetail, DouYuSearchAnchorResult } from "../types/apis";
 const md5 = require('md5');
 
 type Data = {
@@ -250,6 +250,66 @@ async function getHyRoomDetail(roomId: string) {
   return liveRoomDetail
 }
 
+async function searchHyRooms(keyword: string, page = 1) {
+  const searchPrams = new URLSearchParams({
+    m: "Search",
+    do: "getSearchContent",
+    q: keyword,
+    uid: "0",
+    v: "4",
+    typ: "-5",
+    livestate: "0",
+    rows: "20",
+    start: ((page - 1) * 20).toString()
+  });
+  const result = await fetch(`/shy?${searchPrams.toString()}`)
+  const data = await result.json()
+  const roomItems: DouYuLiveRoom = []
+  for (const room of data.response[3].docs) {
+    let cover = room.game_screenshot
+    if (!cover.includes('?')) {
+      cover += '?x-oss-process=style/w338_h190&'
+    }
+    roomItems.push({
+      roomId: room.room_id,
+      cover: cover,
+      title: room.game_roomName ?? '',
+      userName: room.game_nick,
+      online: room.game_total_count ?? 0,
+      avatar: room.game_imgUrl
+    })
+  }
+  const hasMore = data.response[3].numFound > page * 20
+  return liveResult(hasMore, roomItems)
+}
+
+async function searchHyAnchors(keyword: string, page = 1) {
+  const searchPrams = new URLSearchParams({
+    m: "Search",
+    do: "getSearchContent",
+    q: keyword,
+    uid: "0",
+    v: "1",
+    typ: "-5",
+    livestate: "0",
+    rows: "20",
+    start: ((page - 1) * 20).toString()
+  });
+  const result = await fetch(`/shy?${searchPrams.toString()}`)
+  const data = await result.json()
+  const anchorItems: DouYuSearchAnchorResult[] = []
+  for (const room of data.response[1].docs) {
+    anchorItems.push({
+      roomId: room.room_id,
+      userName: room.game_nick,
+      liveStatus: room.gameLiveOn,
+      avatar: room.game_avatarUrl180
+    })
+  }
+  const hasMore = data.response[1].numFound > (page * 20);
+  return LiveSearchAnchorResult(hasMore, anchorItems)
+}
+
 
 async function getAnonymousUid() {
   const body = {
@@ -308,5 +368,5 @@ function processAnticode(anticode: string, uid: string, streamname: string): str
   return queryParameters.toString();
 }
 
-export { getHyRecommendRooms, getHyCategores, getHySubCategories, getHyCategoryRoom }
+export { getHyRecommendRooms, getHyCategores, getHySubCategories, getHyCategoryRoom, searchHyRooms, searchHyAnchors }
 export { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls }
