@@ -88,7 +88,7 @@ async function searchBlRooms(keyword: string, page = 1) {
 async function searchBlAnchors(keyword: string, page = 1) {
   const result = await fetch(`/abili/x/web-interface/search/type?context=&search_type=live_user&cover_type=user_cover&order=&keyword=${keyword}&category_id=&__refresh__=&_extra=&highlight=0&single_column=0&page=${page}`)
   const data = await result.json()
-  const anchorItems: DouYuSearchAnchorResult[] = []
+  const anchorItems: DouYuSearchAnchorResult = []
   data.data.result.forEach((anchor: { uname: string; roomid: string; uface: string; is_live: string; }) => {
     let title = anchor.uname
     title = title.replace(/<.*?em.*?>/g, "");
