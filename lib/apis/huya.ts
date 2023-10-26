@@ -273,7 +273,7 @@ async function searchHyRooms(keyword: string, page = 1) {
     roomItems.push({
       roomId: room.room_id,
       cover: cover,
-      title: room.game_roomName ?? '',
+      title: room.game_introduction ?? '',
       userName: room.game_nick,
       online: room.game_total_count ?? 0,
       avatar: room.game_imgUrl
