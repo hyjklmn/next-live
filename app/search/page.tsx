@@ -89,6 +89,7 @@ function AnchorCard(props: any) {
             <div key={anchor.roomId} className="flex flex-col items-center border p-8 transition-colors duration-200 transform cursor-pointer group hover:bg-blue-600 rounded-xl">
               <Image className="object-cover w-28 h-28 rounded-full ring-4 ring-gray-300"
                 loader={imageLoader} src={anchor.avatar}
+                priority
                 width={0}
                 height={0}
                 alt="" />

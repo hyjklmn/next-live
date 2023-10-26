@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import MessageAlert from '@/components/AlertMessage'
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
@@ -15,6 +15,10 @@ import {
 import { NavLinks } from "@/lib/NavLinks"
 
 export default function Search() {
+  const searchParams = useSearchParams()
+  const type = searchParams.get('type')
+  const platform = searchParams.get('platform')
+
   const platFormVal = useRef("")
   const typeVal = useRef("")
   const searchVal = useRef("")
@@ -22,15 +26,15 @@ export default function Search() {
   function searchBlur(event: React.FocusEvent<HTMLInputElement>) {
     searchVal.current = event.target.value
   }
-
   function searchClick() {
     if (searchVal.current === '' && platFormVal.current === '' && typeVal.current === '') return
     router.push(`/search?keyword=${searchVal.current}&type=${typeVal.current}&platform=${platFormVal.current}`)
   }
+
   return (
     <div className="flex items-center space-x-2">
-      <Select onValueChange={(value) => { platFormVal.current = value }}>
-        <SelectTrigger>
+      <Select value={platform ?? ''} onValueChange={(value) => { platFormVal.current = value }}>
+        <SelectTrigger className="w-[120px]">
           <SelectValue placeholder="平台" />
         </SelectTrigger>
         <SelectContent>
@@ -39,11 +43,10 @@ export default function Search() {
               <SelectItem key={link.key} value={link.key.toString()}>{link.title}</SelectItem>)
             )
           }
-
         </SelectContent>
       </Select>
-      <Select onValueChange={(value) => { typeVal.current = value }}>
-        <SelectTrigger>
+      <Select value={type ?? ''} onValueChange={(value) => { typeVal.current = value }}>
+        <SelectTrigger className="w-[120px]">
           <SelectValue placeholder="类型" />
         </SelectTrigger>
         <SelectContent>
