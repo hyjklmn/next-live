@@ -19,11 +19,6 @@ type DouYuLiveRoom = {
   avatar?: string
 }[]
 
-interface LiveResult {
-  hasMore: boolean
-  roomItems: DouYuLiveRoom
-}
-
 interface LiveRoomDetail {
   roomId: string
   title: string
@@ -51,10 +46,21 @@ interface DouYuAnchorInfo {
     rid: string; avatar: string; nickName: string; isLive: string;
   }
 }
-interface DouYuSearchAnchorResult {
+type DouYuSearchAnchorResult = {
   roomId: string
   avatar: string
   userName: string
   liveStatus: string //1直播,2没直播
+}[]
+
+
+interface LiveResult {
+  hasMore: boolean
+  roomItems: DouYuLiveRoom
 }
-export { LiveCategory, LiveSubCategory, DouYuLiveRoom, DouYuListResult, LiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult }
+
+interface AnchorResult {
+  hasMore: boolean
+  anchorItems: DouYuSearchAnchorResult
+}
+export { LiveCategory, LiveSubCategory, DouYuLiveRoom, DouYuListResult, LiveRoomDetail, DouYuSearchRoomResult, DouYuSearchAnchorResult, DouYuAnchorInfo, LiveResult, AnchorResult }

@@ -77,6 +77,7 @@ async function searchRooms(keyword: string, page = 1) {
       userName: l['nickName'],
       cover: l['roomSrc'],
       online: l['hot'],
+      avatar: l['avatar']
     })
   });
   let hasMore = data.data.relateShow.length !== 0
@@ -86,7 +87,7 @@ async function searchRooms(keyword: string, page = 1) {
 async function searchAnchors(keyword: string, page = 1) {
   const result = await fetch(`/dyu/japi/search/api/searchUser?kw=${keyword}&page=${page}&pageSize=20&filterType=1`)
   const data = await result.json()
-  const anchorItems: DouYuSearchAnchorResult[] = []
+  const anchorItems: DouYuSearchAnchorResult = []
   data.data.relateUser.forEach((anchor: DouYuAnchorInfo) => {
     anchorItems.push({
       roomId: anchor.anchorInfo.rid,

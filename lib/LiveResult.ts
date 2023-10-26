@@ -3,6 +3,6 @@ import { DouYuAnchorInfo, DouYuLiveRoom, DouYuSearchAnchorResult } from "./types
 export function liveResult(hasMore: boolean, roomItems: DouYuLiveRoom) {
   return { hasMore, roomItems }
 }
-export function LiveSearchAnchorResult(hasMore: boolean, anchorItems: DouYuSearchAnchorResult[]) {
+export function LiveSearchAnchorResult(hasMore: boolean, anchorItems: DouYuSearchAnchorResult) {
   return { hasMore, anchorItems }
 }
