@@ -30,6 +30,7 @@ export default function SearchPage() {
       setRoomList(data)
     } else {
       const data = await searchAnchors(keyword!)
+      setAnchorList(data)
     }
   }
   async function huyaSearch() {
@@ -63,12 +64,9 @@ export default function SearchPage() {
   }, [platform, keyword])
   return (
     <div>
-      {/* {
-        roomList.roomItems.length === 0 ? <Loading /> :
-          <RoomCard list={roomList.roomItems} />
-      } */}
       {
-        anchorList.anchorItems.length === 0 ? <Loading /> :
+        type === '房间' ? roomList.roomItems.length === 0 ? <Loading /> :
+          <RoomCard list={roomList.roomItems} /> : anchorList.anchorItems.length === 0 ? <Loading /> :
           <AnchorCard list={anchorList.anchorItems} />
       }
     </div >

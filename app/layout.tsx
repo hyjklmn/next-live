@@ -3,7 +3,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
 import { ThemeProvider } from "@/components/theme-provider"
-
+import { ToastProvider } from '@/components/AlertMessage'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({
@@ -16,8 +16,10 @@ export default function RootLayout({
     <html suppressHydrationWarning>
       <body className={`min-h-screen overflow-hidden ${inter.className}`} >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem >
-          <Header />
-          {children}
+          <ToastProvider>
+            <Header />
+            {children}
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>
