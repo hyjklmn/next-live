@@ -297,7 +297,7 @@ async function searchHyAnchors(keyword: string, page = 1) {
   });
   const result = await fetch(`/shy?${searchPrams.toString()}`)
   const data = await result.json()
-  const anchorItems: DouYuSearchAnchorResult[] = []
+  const anchorItems: DouYuSearchAnchorResult = []
   for (const room of data.response[1].docs) {
     anchorItems.push({
       roomId: room.room_id,
