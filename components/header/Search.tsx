@@ -33,10 +33,9 @@ export default function Search() {
     }
     router.push(`/search?keyword=${searchVal.current}&type=${typeVal.current}&platform=${platFormVal.current}`)
   }
-
   return (
     <div className="flex items-center space-x-2">
-      <Select value={platform ?? ''} onValueChange={(value) => { platFormVal.current = value }}>
+      <Select onValueChange={(value) => { platFormVal.current = value }}>
         <SelectTrigger className="w-[120px]">
           <SelectValue placeholder="平台" />
         </SelectTrigger>
@@ -48,7 +47,7 @@ export default function Search() {
           }
         </SelectContent>
       </Select>
-      <Select value={type ?? ''} onValueChange={(value) => { typeVal.current = value }}>
+      <Select onValueChange={(value) => { typeVal.current = value }}>
         <SelectTrigger className="w-[120px]">
           <SelectValue placeholder="类型" />
         </SelectTrigger>
