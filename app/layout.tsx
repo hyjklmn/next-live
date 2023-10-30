@@ -3,7 +3,7 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import Header from '@/components/header'
 import { ThemeProvider } from "@/components/theme-provider"
-import { ToastProvider } from '@/components/AlertMessage'
+import { ToastProvider } from '@/hooks/useToast'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function RootLayout({

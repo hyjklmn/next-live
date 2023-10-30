@@ -1,7 +1,5 @@
 import { useRef } from "react"
 import { useRouter, useSearchParams } from 'next/navigation'
-
-// import MessageAlert from '@/components/AlertMessage'
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { NavLinks } from "@/lib/NavLinks"
-import { useToast } from "../AlertMessage"
+import { useToast } from "@/hooks/useToast"
 
 export default function Search() {
   const searchParams = useSearchParams()
@@ -30,9 +28,7 @@ export default function Search() {
   const { addToast } = useToast();
   function searchClick() {
     if (searchVal.current === '' && platFormVal.current === '' && typeVal.current === '') {
-      console.log(1);
-
-      addToast('请填写搜索条件', 'warning')
+      addToast('请填写搜索条件', 'error')
       return
     }
     router.push(`/search?keyword=${searchVal.current}&type=${typeVal.current}&platform=${platFormVal.current}`)
