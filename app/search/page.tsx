@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { searchRooms, searchAnchors } from '@/lib/apis/douyu'
 import { searchBlRooms, searchBlAnchors } from '@/lib/apis/bilibili'
@@ -75,15 +75,21 @@ export default function SearchPage() {
 
 
 function AnchorCard(props: any) {
+  const router = useRouter()
+
   const imageLoader = ({ src, width }: ImageLoaderProps) => {
     return `${src}?w=${width}`
+  }
+  function toPlayer(rid: string) {
+    const regex = /\/([^/]+)\/?/g;
+    router.push(`/player/?rid=${rid}&plat=hy`)
   }
   return (
     <div className='relative grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4'>
       {
         props.list.map((anchor: any) => {
           return (
-            <div key={anchor.roomId} className="flex flex-col items-center border px-2 py-6 transition-colors duration-200 transform cursor-pointer group hover:bg-blue-600 rounded-xl">
+            <div key={anchor.roomId} className="flex flex-col items-center border px-2 py-6 transition-colors duration-200 transform cursor-pointer group hover:bg-blue-600 rounded-xl" onClick={() => toPlayer(anchor.roomId)}>
               <Image className="object-cover w-28 h-28 rounded-full ring-4 ring-gray-300"
                 loader={imageLoader} src={anchor.avatar}
                 priority

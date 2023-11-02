@@ -47,8 +47,6 @@ function NavItem({ href, children, }: {
 
 
 export default function Header() {
-  let isLogin = false
-
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const radius = useMotionValue(0)
