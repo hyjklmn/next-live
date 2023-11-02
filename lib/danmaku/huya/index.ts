@@ -1,5 +1,5 @@
 import { HUYA, Taf, TafMx } from './lib'
-import { getCommetMsg, getGiftMsg } from './helper'
+import { getCommetMsg } from './helper'
 import Client, { Gift, Comment } from '../client'
 
 type ID = string | number

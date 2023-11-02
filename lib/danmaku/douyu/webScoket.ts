@@ -29,10 +29,10 @@ export class WebSocketUtils {
 
   headers?: { [key: string]: any };
   webSocket?: WebSocket;
-  heartBeatTimer?: NodeJS.Timer;
+  heartBeatTimer?: any;
 
   reconnectTime = 0;
-  reconnectTimer?: NodeJS.Timer;
+  reconnectTimer?: any;
   maxReconnectTime = 5;
   constructor(config: WebSocketUtilsConfig) {
     this.url = config.url;
