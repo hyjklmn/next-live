@@ -9,12 +9,14 @@ import { AnchorResult, DouYuSearchAnchorResult, LiveResult } from '@/lib/types/a
 import Loading from '@/components/loading'
 import RoomCard from '@/components/RoomCard'
 import Image, { ImageLoaderProps } from 'next/image'
+import { useToast } from '@/hooks/useToast'
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const keyword = searchParams.get('keyword')
   const type = searchParams.get('type')
   const platform = searchParams.get('platform')
+  const { addToast } = useToast();
 
   const [roomList, setRoomList] = useState<LiveResult>({
     hasMore: false,
@@ -27,6 +29,10 @@ export default function SearchPage() {
   async function douyuSearch() {
     if (type === '房间') {
       const data = await searchRooms(keyword!)
+      if (typeof data === 'string') {
+        addToast('请填写搜索条件', 'error')
+        return
+      }
       setRoomList(data)
     } else {
       const data = await searchAnchors(keyword!)
@@ -68,7 +74,7 @@ export default function SearchPage() {
   return (
     <div>
       {
-        type === '房间' ? roomList.roomItems.length === 0 ? <Loading /> :
+        type === '房间' && roomList.roomItems ? roomList.roomItems.length === 0 ? <Loading /> :
           <RoomCard list={roomList.roomItems} /> : anchorList.anchorItems.length === 0 ? <Loading /> :
           <AnchorCard list={anchorList.anchorItems} />
       }

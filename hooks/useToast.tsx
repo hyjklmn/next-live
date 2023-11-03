@@ -31,7 +31,7 @@ export const ToastProvider: FC<ToastProviderProps> = ({ children }) => {
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>
       {children}
-      <div ref={aletBox} className='hidden backdrop-blur group z-50 absolute top-[10%] left-[50%] translate-x-[-50%]'>
+      <div ref={aletBox} className='hidden backdrop-blur group z-50 absolute top-0 left-0 translate-x-[-50%]'>
         <Alert>
           <AlertDescription className='flex gap-2 items-center'>
             {
