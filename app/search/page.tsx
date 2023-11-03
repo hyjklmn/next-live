@@ -46,6 +46,9 @@ export default function SearchPage() {
     if (type === '房间') {
       const data = await searchBlRooms(keyword!)
       setRoomList(data)
+    } else {
+      const data = await searchBlAnchors(keyword!)
+      setAnchorList(data)
     }
   }
   useEffect(() => {
