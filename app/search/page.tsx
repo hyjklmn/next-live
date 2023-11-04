@@ -30,7 +30,7 @@ export default function SearchPage() {
     if (type === '房间') {
       const data = await searchRooms(keyword!)
       if (typeof data === 'string') {
-        addToast('请填写搜索条件', 'error')
+        addToast(data, 'error')
         return
       }
       setRoomList(data)

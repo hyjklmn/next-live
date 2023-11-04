@@ -1,7 +1,8 @@
 import React, { createContext, useContext, FC, useState, useEffect } from 'react';
 import { ToastType, ToastMessage, ToastContextProps } from './types';
-import { AlertCircle, XCircle, CheckCircle2, AlertCircleIcon } from "lucide-react"
+import { XCircle, CheckCircle2, AlertCircleIcon } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { motion } from 'framer-motion';
 interface ToastProviderProps {
   children: React.ReactNode; // ReactNode 表示任何可以被渲染的内容，包括字符串、数字、React 组件等
 }
@@ -28,10 +29,14 @@ export const ToastProvider: FC<ToastProviderProps> = ({ children }) => {
     }, 3000);
     return () => clearTimeout(timer);
   }, [toasts])
+
   return (
     <ToastContext.Provider value={{ addToast, removeToast }}>
       {children}
-      <div ref={aletBox} className='hidden backdrop-blur group z-50 absolute top-0 left-0 translate-x-[-50%]'>
+      <div
+        ref={aletBox}
+        style={{ top: '10%', left: '50%' }}
+        className='hidden backdrop-blur group z-50 absolute translate-x-[-50%]'>
         <Alert>
           <AlertDescription className='flex gap-2 items-center'>
             {
@@ -39,29 +44,28 @@ export const ToastProvider: FC<ToastProviderProps> = ({ children }) => {
                 switch (toast.type) {
                   case 'warning':
                     return (
-                      <AlertCircleIcon className='h-4 w-4 text-yellow-500' />
+                      <AlertCircleIcon key={toast.id} className='h-4 w-4 text-yellow-500' />
                     )
                   case 'error':
                     return (
-                      <XCircle className="h-4 w-4 text-red-500" />
+                      <XCircle key={toast.id} className="h-4 w-4 text-red-500" />
                     )
                   default:
                     return (
-                      <CheckCircle2 className="h-4 w-4 text-blue-500" />
+                      <CheckCircle2 key={toast.id} className="h-4 w-4 text-blue-500" />
                     )
                 }
               })
             }
             {toasts.map(toast => (
-              <div key={toast.id}>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} key={toast.id}>
                 {toast.message}
-              </div>
+              </motion.div>
             ))}
           </AlertDescription>
         </Alert>
-        {/* <XCircle className="h-4 w-4 hidden cursor-pointer absolute right-1 top-1 text-destructive group-hover:block" onClick={hiddenAlert} /> */}
-      </div>
-    </ToastContext.Provider>
+      </div >
+    </ToastContext.Provider >
   );
 };
 
