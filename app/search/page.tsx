@@ -9,15 +9,14 @@ import { AnchorResult, DouYuSearchAnchorResult, LiveResult } from '@/lib/types/a
 import Loading from '@/components/loading'
 import RoomCard from '@/components/RoomCard'
 import Image, { ImageLoaderProps } from 'next/image'
-import { useToast } from '@/hooks/useToast'
+import { useToast } from "@/hooks/useToast"
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
   const keyword = searchParams.get('keyword')
   const type = searchParams.get('type')
   const platform = searchParams.get('platform')
-  const { addToast } = useToast();
-
+  const { showToast } = useToast();
   const [roomList, setRoomList] = useState<LiveResult>({
     hasMore: false,
     roomItems: []
@@ -30,7 +29,10 @@ export default function SearchPage() {
     if (type === '房间') {
       const data = await searchRooms(keyword!)
       if (typeof data === 'string') {
-        addToast(data, 'error')
+        showToast({
+          type: 'error',
+          content: data
+        })
         return
       }
       setRoomList(data)

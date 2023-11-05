@@ -25,10 +25,13 @@ export default function Search() {
   function searchBlur(event: React.FocusEvent<HTMLInputElement>) {
     searchVal.current = event.target.value
   }
-  const { addToast } = useToast();
+  const { showToast, hideToast } = useToast();
   function searchClick() {
     if (searchVal.current === '' && platFormVal.current === '' && typeVal.current === '') {
-      addToast('请填写搜索条件', 'error')
+      showToast({
+        content: '填写完整内容',
+        type: 'error'
+      })
       return
     }
     router.push(`/search?keyword=${searchVal.current}&type=${typeVal.current}&platform=${platFormVal.current}`)
