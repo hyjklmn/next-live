@@ -62,7 +62,7 @@ export default function Categories() {
                           unoptimized
                           width="0"
                           height="0"
-                          className="w-full h-auto" alt={sub.name}></Image>
+                          className="w-full h-auto object-cover" alt={sub.name}></Image>
                       </figure>
                       <span>
                         {sub.name}
