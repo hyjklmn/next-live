@@ -4,6 +4,7 @@ import { getHyRecommendRooms } from '@/lib/apis/huya'
 import { LiveResult } from '@/lib/types/apis'
 import RoomCard from '@/components/RoomCard'
 import Link from 'next/link'
+import Loading from '@/components/loading'
 
 export default function Page() {
   const [recommend, setRecommend] = useState<LiveResult>({
@@ -15,20 +16,15 @@ export default function Page() {
     (async function () {
       const data = await getHyRecommendRooms()
       setRecommend(data)
-      // hy.addListener('message', (msg) => {
-      //   console.log(msg);
-      // })
     })()
-    // return () => {
-    //   hy.exit()
-    //   hy.removeAllListeners()
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return (
     <div>
       <Link href='/hy/categories'>虎牙 categories</Link>
-      <RoomCard list={recommend.roomItems} />
+      {
+        recommend.roomItems.length !== 0 ? <RoomCard list={recommend.roomItems} /> : <Loading />
+      }
     </ div>
   )
 }

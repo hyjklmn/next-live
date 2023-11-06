@@ -4,6 +4,7 @@ import Link from 'next/link'
 import RoomCard from '@/components/RoomCard'
 import { getBlRecommendRooms } from '@/lib/apis/bilibili'
 import { LiveResult } from '@/lib/types/apis'
+import Loading from '@/components/loading'
 
 export default function Page() {
   const [recommend, setRecommend] = useState<LiveResult>({
@@ -21,7 +22,9 @@ export default function Page() {
       <meta name='referrer' content='no-referrer' />
       <Link href='/blbl/categories'>哔哩哔哩 categories</Link>
       <p className='text-center text-lg'>推荐</p>
-      <RoomCard list={recommend.roomItems} />
+      {
+        recommend.roomItems.length !== 0 ? <RoomCard list={recommend.roomItems} /> : <Loading />
+      }
     </div>
   )
 }
