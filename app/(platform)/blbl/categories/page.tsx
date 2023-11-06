@@ -6,6 +6,7 @@ import { getBlCategores } from '@/lib/apis/bilibili'
 import { LiveCategory, LiveSubCategory } from '@/lib/types/apis';
 import Link from 'next/link';
 import Loading from '@/components/loading';
+import CategoryNav from '../../category-nav';
 
 export default function Categories() {
   const pathName = usePathname()
@@ -38,15 +39,8 @@ export default function Categories() {
       {
         category.length === 0 ? <Loading /> : (
           <>
-            <div className="flex justify-center sticky top-1 left-0 my-2 text-sm md:text-base font-medium m-auto z-10">
-              <nav className="flex items-center space-x-3 md:space-x-6 p-2 border-2 rounded-full bg-background">
-                {
-                  category.map(cate => {
-                    return <span onClick={() => changeCate(cate.id)} key={cate.id} className={`${currentCate.current == cate.id ? 'text-lime-500' : ''} cursor-pointer transition-colors hover:text-lime-500 text-foreground/60`}>{cate.name}</span>
-                  })
-                }
-              </nav>
-            </div>
+            <CategoryNav category={category} func={changeCate} />
+
             <div className='grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-4'>
               {
                 subCategory.map(sub => {
