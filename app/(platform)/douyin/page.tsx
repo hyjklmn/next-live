@@ -18,7 +18,7 @@ export default function DouYinPage() {
   }, [])
   return (
     <div>
-      <Link href='/douyu/categories'>抖音 categories</Link>
+      <Link href='/douyin/categories'>抖音 categories</Link>
       <p className='text-center text-lg'>推荐</p>
       {
         recommend.roomItems.length !== 0 ? <RoomCard list={recommend.roomItems} /> : <Loading />
