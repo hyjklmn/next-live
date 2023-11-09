@@ -211,7 +211,6 @@ async function searchDouyinRooms(keyword: string, page = 1) {
     }
   })
   const data = await result.json()
-
   const roomItems: DouYuLiveRoom = []
   for (const item of data.data) {
     const itemData = JSON.parse(item.lives.rawdata)
@@ -221,6 +220,7 @@ async function searchDouyinRooms(keyword: string, page = 1) {
       cover: itemData.cover.url_list[0],
       userName: itemData.owner.nickname,
       online: itemData.stats.total_user ?? 0,
+      avatar: itemData.owner.avatar_thumb.url_list[0]
     })
   }
   const hasMore = roomItems.length >= 10

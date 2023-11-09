@@ -17,6 +17,8 @@ import {
 import { onlineConvert } from '@/lib/Platforms'
 
 function AnchorAvatar(props: any) {
+  console.log(props);
+
   return (
     <span className='flex items-center gap-2 mt-2'>
       <Avatar className='w-10 h-10'>
@@ -57,6 +59,7 @@ export default function RoomCard(props: { list: Array<Object>, }) {
                       priority
                       width='0'
                       height='0'
+                      unoptimized={true}
                       className="min-w-full h-full object-cover"
                       alt={room.userName} />
                     <div className='flex items-center absolute bottom-0 right-0 p-[2px] text-sm rounded font-medium bg-secondary/80'>
