@@ -17,8 +17,6 @@ import {
 import { onlineConvert } from '@/lib/Platforms'
 
 function AnchorAvatar(props: any) {
-  console.log(props);
-
   return (
     <span className='flex items-center gap-2 mt-2'>
       <Avatar className='w-10 h-10'>

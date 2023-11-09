@@ -78,6 +78,18 @@ module.exports = (req, res) => {
       '^/dyin': ''
     }
   }
+  if (req.url.startsWith('/wdyin')) {
+    target = 'https://www.douyin.com'
+    rewtire = {
+      '^/wdyin': ''
+    }
+  }
+  if (req.url.startsWith('/dysign')) {
+    target = 'https://tk.nsapps.cn/'
+    rewtire = {
+      '^/dysign': ''
+    }
+  }
   // 创建代理对象并转发请求
   createProxyMiddleware({
     target,

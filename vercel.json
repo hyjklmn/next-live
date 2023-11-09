@@ -43,6 +43,14 @@
     {
       "source": "/dyin/(.*)",
       "destination": "/api/proxy"
+    },
+    {
+      "source": "/wdyin/(.*)",
+      "destination": "/api/proxy"
+    },
+    {
+      "source": "/dysign/(.*)",
+      "destination": "/api/proxy"
     }
   ]
  }
