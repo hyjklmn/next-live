@@ -34,6 +34,13 @@ export default function Search() {
       })
       return
     }
+    if (typeVal.current === '主播' && platFormVal.current === '4') {
+      showToast({
+        content: '暂不支持抖音主播搜索',
+        type: 'error'
+      })
+      return
+    }
     router.push(`/search?keyword=${searchVal.current}&type=${typeVal.current}&platform=${platFormVal.current}`)
   }
   return (

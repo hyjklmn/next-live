@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { searchRooms, searchAnchors } from '@/lib/apis/douyu'
 import { searchBlRooms, searchBlAnchors } from '@/lib/apis/bilibili'
 import { searchHyAnchors, searchHyRooms } from '@/lib/apis/huya'
+import { searchDouyinRooms } from '@/lib/apis/douyin'
 import { AnchorResult, DouYuSearchAnchorResult, LiveResult } from '@/lib/types/apis'
 import Loading from '@/components/loading'
 import RoomCard from '@/components/RoomCard'
@@ -59,6 +60,24 @@ export default function SearchPage() {
       setAnchorList(data)
     }
   }
+  async function douyinSearch() {
+    if (type === '房间') {
+      const data = await searchDouyinRooms(keyword!)
+      if (data.roomItems.length === 0) {
+        showToast({
+          type: 'error',
+          content: '暂无内容,稍后重试'
+        })
+        return
+      }
+      setRoomList(data)
+    } else {
+      showToast({
+        type: 'default',
+        content: '抖音暂不支持搜索主播，请直接搜索直播间'
+      });
+    }
+  }
   useEffect(() => {
 
     if (platform === '1') {
@@ -70,7 +89,9 @@ export default function SearchPage() {
     if (platform === '3') {
       biliSearch()
     }
-    if (platform === '4') { }
+    if (platform === '4') {
+      douyinSearch()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [platform, keyword])
   return (
@@ -88,8 +109,8 @@ export default function SearchPage() {
 function AnchorCard(props: any) {
   const router = useRouter()
 
-  const imageLoader = ({ src, width }: ImageLoaderProps) => {
-    return `${src}?w=${width}`
+  const imageLoader = ({ src }: ImageLoaderProps) => {
+    return `${src}`
   }
   function toPlayer(rid: string) {
     const regex = /\/([^/]+)\/?/g;

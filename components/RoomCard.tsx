@@ -35,8 +35,8 @@ function AnchorAvatar(props: any) {
 export default function RoomCard(props: { list: Array<Object>, }) {
   const router = useRouter()
   const path = usePathname()
-  const imageLoader = ({ src, width }: ImageLoaderProps) => {
-    return `${src}?w=${width}`
+  const imageLoader = ({ src }: ImageLoaderProps) => {
+    return `${src}`
   }
 
   function toPlayer(rid: string) {

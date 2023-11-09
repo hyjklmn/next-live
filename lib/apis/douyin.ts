@@ -158,59 +158,60 @@ async function getRoomWebDetail(webRid: string) {
   return renderDataJson.state
 }
 
-async function searchRooms(keyword: string, page = 1) {
-  const serverUrl: string = 'https://www.douyin.com/aweme/v1/web/live/search/';
-  const queryParams: URLSearchParams = new URLSearchParams({
-    device_platform: 'webapp',
-    aid: '6383',
-    channel: 'channel_pc_web',
-    search_channel: 'aweme_live',
-    keyword: keyword,
-    search_source: 'switch_tab',
-    query_correct_type: '1',
-    is_filter_search: '0',
-    from_group_id: '',
-    offset: ((page - 1) * 30).toString(),
-    count: '30',
-    pc_client_type: '1',
-    version_code: '170400',
-    version_name: '17.4.0',
-    cookie_enabled: 'true',
-    screen_width: '1980',
-    screen_height: '1080',
-    browser_language: 'zh-CN',
-    browser_platform: 'Win32',
-    browser_name: 'Edge',
-    browser_version: '114.0.1823.58',
-    browser_online: 'true',
-    engine_name: 'Blink',
-    engine_version: '114.0.0.0',
-    os_name: 'Windows',
-    os_version: '10',
-    cpu_core_num: '12',
-    device_memory: '8',
-    platform: 'PC',
-    downlink: '4.7',
-    effective_type: '4g',
-    round_trip_time: '100',
-    webid: '7247041636524377637'
-  });
-  const uri: string = `${serverUrl}?${queryParams.toString()}`;
-  const resultUrl = await signUrl(uri)
-  const fetchUrl = resultUrl.url.replace('https://www.douyin.com', '/wdyin')
+async function searchDouyinRooms(keyword: string, page = 1) {
+  const serverUrl: string = "https://www.douyin.com/aweme/v1/web/live/search/";
+  const uri = new URL(serverUrl);
+  uri.protocol = "https";
+  uri.port = "443";
+  uri.search = new URLSearchParams({
+    "device_platform": "webapp",
+    "aid": "6383",
+    "channel": "channel_pc_web",
+    "search_channel": "aweme_live",
+    "keyword": keyword,
+    "search_source": "switch_tab",
+    "query_correct_type": "1",
+    "is_filter_search": "0",
+    "from_group_id": "",
+    "offset": ((page - 1) * 10).toString(),
+    "count": "10",
+    "pc_client_type": "1",
+    "version_code": "170400",
+    "version_name": "17.4.0",
+    "cookie_enabled": "true",
+    "screen_width": "1980",
+    "screen_height": "1080",
+    "browser_language": "zh-CN",
+    "browser_platform": "Win32",
+    "browser_name": "Edge",
+    "browser_version": "114.0.1823.58",
+    "browser_online": "true",
+    "engine_name": "Blink",
+    "engine_version": "114.0.0.0",
+    "os_name": "Windows",
+    "os_version": "10",
+    "cpu_core_num": "12",
+    "device_memory": "8",
+    "platform": "PC",
+    "downlink": "4.7",
+    "effective_type": "4g",
+    "round_trip_time": "100",
+    "webid": "7247041636524377637",
+  }).toString();
+
+  let requestUrl = await signUrl(uri.toString());
+  const fetchUrl = requestUrl.url.replace('https://www.douyin.com', '/wdyin')
+
+  document.cookie = `__ac_nonce=${generateRandomString(21)}`
   const result = await fetch(fetchUrl, {
     headers: {
       "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
       "Authority": "live.douyin.com",
       "Referer": "https://www.douyin.com/",
-      "Cookie": `__ac_nonce=${generateRandomString(21)}`,
     }
   })
   const data = await result.json()
-  if (data.data.length === 0) {
-    console.log('暂无信息');
-    return
-  }
+
   const roomItems: DouYuLiveRoom = []
   for (const item of data.data) {
     const itemData = JSON.parse(item.lives.rawdata)
@@ -254,4 +255,4 @@ function generateRandomString(length: number): string {
 }
 
 export { getDyinCategores, getRecommendRooms, getCategoryRooms }
-export { getDyinRoomDetail, searchRooms, }
+export { getDyinRoomDetail, searchDouyinRooms, }
