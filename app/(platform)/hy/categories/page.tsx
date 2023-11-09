@@ -56,12 +56,12 @@ export default function Categories() {
                           unoptimized
                           width="0"
                           height="0"
-                          className="w-full h-auto object-cover"
+                          className="w-full max-h-[110px] object-cover"
                           alt={sub.name}></Image>
                       </figure>
-                      <span>
+                      <div title={sub.name} className='relative -bottom-2 truncate'>
                         {sub.name}
-                      </span>
+                      </div>
                     </Link>)
                 })
               }
