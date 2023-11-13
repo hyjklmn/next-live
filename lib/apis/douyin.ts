@@ -1,6 +1,5 @@
-import axios from 'axios'
 import { liveResult } from "../LiveResult";
-import { DouYuLiveRoom, LiveCategory, LiveSubCategory } from "../types/apis";
+import { DouYuLiveRoom, LiveCategory, LiveRoomDetail, LiveSubCategory } from "../types/apis";
 
 const headers: { [key: string]: string } = {
   "Authority": "live.douyin.com",
@@ -10,6 +9,11 @@ const headers: { [key: string]: string } = {
   'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.51",
 };
 const defaultImg = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAiIGhlaWdodD0iMzQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTExLjY0IDEzLjQzM3YtMS4zMWMtLjQ1Ni0uMDU1LS45MTEtLjA5MS0xLjM4NS0uMDkxLTUuNjQ3IDAtMTAuMjU2IDQuNTg3LTEwLjI1NiAxMC4yNSAwIDMuNDU5IDEuNzMgNi41MzYgNC4zNzIgOC4zOTNhMTAuMTc3IDEwLjE3NyAwIDAgMS0yLjc1LTYuOTczYy4wMTgtNS41OSA0LjQ4LTEwLjE0MSAxMC4wMTgtMTAuMjY5WiIgZmlsbD0iIzAwRkFGMCIvPjxwYXRoIGQ9Ik0xMS44NzcgMjguMzQ1YTQuNjc1IDQuNjc1IDAgMCAwIDQuNjYzLTQuNDk3VjEuNTQ1aDQuMDhhNy4yMjYgNy4yMjYgMCAwIDEtLjEyNy0xLjQyaC01LjU3NHYyMi4zMDNhNC42NzUgNC42NzUgMCAwIDEtNC42NjQgNC40OTdjLS43ODMgMC0xLjUzLS4yLTIuMTY3LS41NDdhNC42NDQgNC42NDQgMCAwIDAgMy43ODkgMS45NjdaTTI4LjI1MSA5LjExOVY3Ljg4YTcuNjgzIDcuNjgzIDAgMCAxLTQuMjI2LTEuMjU3IDcuOTE2IDcuOTE2IDAgMCAwIDQuMjI2IDIuNDk1WiIgZmlsbD0iIzAwRkFGMCIvPjxwYXRoIGQ9Ik0yNC4wNDUgNi42MjZhNy43MjEgNy43MjEgMCAwIDEtMS45MTMtNS4wOGgtMS40OTRhNy44MzYgNy44MzYgMCAwIDAgMy40MDcgNS4wOFpNMTAuMjU1IDE3LjU4NWE0LjY3OSA0LjY3OSAwIDAgMC00LjY4MiA0LjY3OWMwIDEuODAyIDEuMDIgMy4zNSAyLjUxNCA0LjEzM2E0LjcwNyA0LjcwNyAwIDAgMS0uODkyLTIuNzMxIDQuNjc5IDQuNjc5IDAgMCAxIDQuNjgxLTQuNjhjLjQ3NCAwIC45NDguMDczIDEuMzg1LjIxOXYtNS42OGMtLjQ1Ni0uMDU1LS45MTEtLjA5MS0xLjM4NS0uMDkxaC0uMjM2djQuMzdhNC4zMjMgNC4zMjMgMCAwIDAtMS4zODUtLjIyWiIgZmlsbD0iI0ZFMkM1NSIvPjxwYXRoIGQ9Ik0yOC4yNTIgOS4xMTl2NC4zMzNjLTIuODk2IDAtNS41NTYtLjkyOS03Ljc0Mi0yLjQ5NHYxMS4zMDZjMCA1LjY0NC00LjU5IDEwLjI1LTEwLjI1NSAxMC4yNS0yLjE4NiAwLTQuMjA4LS42OTItNS44NjYtMS44NTcgMS44NzYgMi4wMDMgNC41MzYgMy4yNzcgNy41MDUgMy4yNzcgNS42NDcgMCAxMC4yNTYtNC41ODggMTAuMjU2LTEwLjI1VjEyLjM3OGExMy4yNjkgMTMuMjY5IDAgMCAwIDcuNzQyIDIuNDk0VjkuMzAxYTkuNjE2IDkuNjE2IDAgMCAxLTEuNjQtLjE4MloiIGZpbGw9IiNGRTJDNTUiLz48cGF0aCBkPSJNMjAuNTEgMjIuMjY0VjEwLjk1OGExMy4yNjggMTMuMjY4IDAgMCAwIDcuNzQxIDIuNDk0VjkuMTJhNy44NSA3Ljg1IDAgMCAxLTQuMjI2LTIuNDk0IDcuNjYgNy42NiAwIDAgMS0zLjM4OC01LjA4aC00LjA4djIyLjMwM2E0LjY3NSA0LjY3NSAwIDAgMS00LjY2NCA0LjQ5NyA0LjYyNSA0LjYyNSAwIDAgMS0zLjc4OS0xLjk0OCA0LjY3OCA0LjY3OCAwIDAgMS0yLjUxNC00LjEzMyA0LjY3OSA0LjY3OSAwIDAgMSA0LjY4Mi00LjY3OWMuNDczIDAgLjk0Ny4wNzMgMS4zODQuMjE4di00LjM3Yy01LjUzOC4xMjgtMTAgNC42OC0xMCAxMC4yMzMgMCAyLjY5NCAxLjAzOCA1LjE1MiAyLjc1IDYuOTczYTEwLjIxMSAxMC4yMTEgMCAwIDAgNS44NjYgMS44NTdjNS42MjkuMDE4IDEwLjIzNy00LjU4OCAxMC4yMzctMTAuMjMyWiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg=="
+
+async function getRequestHeaders() {
+  const data = await signUrl('https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=7142091187963399427&aid=1128&version_name=23.5.0&device_platform=android&os_version=2333')
+  document.cookie = 'ttwid' + '=' + data.ttwid;
+}
 
 async function getDyinCategores() {
   const result = await fetch('/dyin/hot_live')
@@ -129,13 +133,27 @@ async function getDyinRoomDetail(roomId: string) {
     "browser_name": "Edge",
     "browser_version": "114.0.1823.51"
   })
-  const result = await fetch(`/dyin/webcast/room/web/enter/?${queryParameters.toString()}`, {
-    headers: {
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-      "Authority": "live.douyin.com",
-      "Referer": "https://live.douyin.com",
-    }
-  })
+  getRequestHeaders()
+  const result = await fetch(`/dyin/webcast/room/web/enter/?${queryParameters.toString()}`)
+  const data = await result.json()
+  const roomInfo = data.data.data[0]
+  const userInfo = data.data.user
+  const roomStatus = roomInfo.status
+  const liveRoomDetail: LiveRoomDetail = {
+    roomId: webRid,
+    title: roomInfo.title,
+    cover: roomStatus === 2 ? roomInfo.cover.url_list[0] : '',
+    userName: userInfo.nickname,
+    userAvatar: userInfo.avatar_thumb.url_list[0],
+    online: roomStatus === 2 ? roomInfo.room_view_stats.display_value : 0,
+    status: roomStatus,
+    url: `https://live.douyin.com/${webRid}`,
+    introduction: roomInfo.title,
+    notice: "",
+    data: roomInfo.stream_url,
+    danmakuData: {}
+  }
+  return liveRoomDetail
 }
 
 async function getRoomWebDetail(webRid: string) {
@@ -152,6 +170,7 @@ async function getRoomWebDetail(webRid: string) {
   const data = await result.text()
   const renderDataMatch = data.match(/\{\\"state\\":\{\\"isLiveModal.*?\]\\n/);
   const renderData = renderDataMatch ? renderDataMatch[0] : '';
+
   const str = renderData.trim().replace(/\\"/g, '"').replace(/\\\\/g, '\\').replace(']\\n', '');
   const renderDataJson = JSON.parse(str);
   return renderDataJson.state
