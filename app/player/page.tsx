@@ -15,6 +15,7 @@ import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { LiveRoomDetail } from '@/lib/types/apis';
 import { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls } from '@/lib/apis/huya';
 import { getBlPlayQualities, getBlPlayUrls, getBlRoomDetail } from '@/lib/apis/bilibili';
+import { getDouyinPlayQualites, getDyinRoomDetail } from '@/lib/apis/douyin';
 function App() {
   const query = useSearchParams()
   const rid = query.get('rid') as string
@@ -154,6 +155,29 @@ function App() {
     })
 
   }
+  async function initDouyin() {
+    const details = await getDyinRoomDetail(rid)
+    const quality = await getDouyinPlayQualites(details)
+    setOptions({
+      container: '',
+      url: quality[0].data[0],
+      autoplay: true,
+      // quality: quality,
+      isLive: true,
+      type: 'flv',
+      customType: {
+        flv: flvFunc,
+      },
+      fullscreen: true,
+      plugins: [
+        artplayerPluginDanmuku({
+          danmuku: [],
+          speed: 10,
+          synchronousPlayback: true
+        })
+      ]
+    })
+  }
 
   async function flvFunc(video: HTMLMediaElement, url: string, art: any) {
     const flvjs = (await import('flv.js')).default
@@ -203,6 +227,9 @@ function App() {
     if (platform === 'blbl') {
       bili.current = new BiliBiliDanmaku(rid)
       initBiliBili()
+    }
+    if (platform === 'douyin') {
+      initDouyin()
     }
 
     return () => {

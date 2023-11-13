@@ -176,6 +176,27 @@ async function getRoomWebDetail(webRid: string) {
   return renderDataJson.state
 }
 
+async function getDouyinPlayQualites(detail: LiveRoomDetail) {
+  const qualities = []
+  const qualityData = JSON.parse(detail.data.live_core_sdk_data.pull_data.stream_data).data
+  const qulityList = detail.data.live_core_sdk_data.pull_data.options.qualities
+  for (const quality of qulityList) {
+    qualities.push({
+      quality: quality.name,
+      sort: quality.level,
+      data: [
+        qualityData[quality.sdk_key].main.flv,
+        qualityData[quality.sdk_key].main.hls,
+      ]
+    })
+  }
+  qualities.sort((a, b) => {
+    return b.sort - a.sort
+  })
+  return qualities
+}
+
+
 async function searchDouyinRooms(keyword: string, page = 1) {
   const serverUrl: string = "https://www.douyin.com/aweme/v1/web/live/search/";
   const uri = new URL(serverUrl);
@@ -273,4 +294,4 @@ function generateRandomString(length: number): string {
 }
 
 export { getDyinCategores, getRecommendRooms, getCategoryRooms }
-export { getDyinRoomDetail, searchDouyinRooms, }
+export { getDyinRoomDetail, searchDouyinRooms, getDouyinPlayQualites }
