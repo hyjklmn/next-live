@@ -26,6 +26,7 @@ function App() {
   const [options, setOptions] = useState<Option>()
   const hy = useRef() as any
   const bili = useRef() as any
+  const [danmuList, setDanmuList] = useState<{ data: any; color: any; uuid?: string }[]>([])
   async function initDouyu() {
     const details = await getRoomDetail(rid)
     const quality = await getPlayQualities(details)
@@ -117,6 +118,13 @@ function App() {
           color: msg.color
         });
       }
+
+      setDanmuList((preDanmuList) => {
+        if (preDanmuList.length > 200) {
+          preDanmuList.splice(0, 200);
+        }
+        return [...preDanmuList, msg]
+      })
     })
   }
   async function initBiliBili() {
@@ -249,12 +257,21 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
   return (
     <>
       {platform === 'blbl' ? <meta name='referrer' content='no-referrer' /> : ''}
-      <div className='w-full h-full'>
-        {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
+      <div className='w-full h-full flex'>
+        <div className='w-[80%] h-full'>
+          {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
+        </div>
+        <div className='overflow-auto' >
+          {danmuList.length}
+          {
+            danmuList.length !== 0 && danmuList.map((item) => {
+              return <div key={item.uuid}>{item.data}</div>
+            })
+          }
+        </div>
       </div>
     </>
 
