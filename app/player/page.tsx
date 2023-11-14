@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 import Hls from 'hls.js';
 import Artplayer from './player';
@@ -26,7 +27,7 @@ function App() {
   const [options, setOptions] = useState<Option>()
   const hy = useRef() as any
   const bili = useRef() as any
-  const [danmuList, setDanmuList] = useState<{ data: any; color: any; uuid?: string }[]>([])
+  const [danmuList, setDanmuList] = useState<{ data: any; color: any; uuid?: string; playerName?: string }[]>([])
   async function initDouyu() {
     const details = await getRoomDetail(rid)
     const quality = await getPlayQualities(details)
@@ -89,7 +90,7 @@ function App() {
   async function initHuya() {
     const details = await getHyRoomDetail(rid)
     const quality = await getHyPlayQualites(details)
-
+    setRoomDetail(details)
     setOptions({
       container: '',
       url: quality[0].data[0],
@@ -118,10 +119,9 @@ function App() {
           color: msg.color
         });
       }
-
       setDanmuList((preDanmuList) => {
         if (preDanmuList.length > 200) {
-          preDanmuList.splice(0, 200);
+          preDanmuList.splice(0, 100);
         }
         return [...preDanmuList, msg]
       })
@@ -264,15 +264,34 @@ function App() {
         <div className='w-[80%] h-full'>
           {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
         </div>
-        <div className='overflow-auto' >
-          {danmuList.length}
-          {
-            danmuList.length !== 0 && danmuList.map((item) => {
-              return <div key={item.uuid}>{item.data}</div>
-            })
-          }
+        <div className='max-w-[20%] flex flex-col px-2'>
+          <div className='h-[30%]'>
+            <div className='sticky left-0 top-0 text-center backdrop-blur'>信息</div>
+            <div>
+
+              {roomDetail?.userName}
+            </div>
+          </div>
+          <ScrollArea className="h-full overflow-hidden">
+            <div className='sticky left-0 top-0 text-center backdrop-blur'>弹幕</div>
+            {
+              danmuList.length !== 0 && danmuList.map((item) => {
+                const color = item.color === '#ffffff' ? 'current' : item.color
+                return (
+                  <div key={item.uuid}>
+                    <div className='py-1 text-base pr-2'>
+                      <span className='text-gray-500'>
+                        {item.playerName}：
+                      </span>
+                      <span style={{ color: `${color}` }}>{item.data}</span>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </ScrollArea >
         </div>
-      </div>
+      </div >
     </>
 
   );
