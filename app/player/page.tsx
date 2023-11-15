@@ -17,7 +17,9 @@ import { LiveRoomDetail } from '@/lib/types/apis';
 import { getHyRoomDetail, getHyPlayQualites, getHyPlayUrls } from '@/lib/apis/huya';
 import { getBlPlayQualities, getBlPlayUrls, getBlRoomDetail } from '@/lib/apis/bilibili';
 import { getDouyinPlayQualites, getDyinRoomDetail } from '@/lib/apis/douyin';
+import useScrollToBottom from '@/hooks/useScrollBottom';
 function App() {
+  const scrollRef = useScrollToBottom();
   const query = useSearchParams()
   const rid = query.get('rid') as string
   const platform = query.get('plat')
@@ -272,13 +274,13 @@ function App() {
               {roomDetail?.userName}
             </div>
           </div>
-          <ScrollArea className="h-full overflow-hidden">
+          <ScrollArea className="h-full overflow-hidden" ref={scrollRef}>
             <div className='sticky left-0 top-0 text-center backdrop-blur'>弹幕</div>
             {
               danmuList.length !== 0 && danmuList.map((item) => {
                 const color = item.color === '#ffffff' ? 'current' : item.color
                 return (
-                  <div key={item.uuid}>
+                  <div key={item.uuid} >
                     <div className='py-1 text-base pr-2'>
                       <span className='text-gray-500'>
                         {item.playerName}：
