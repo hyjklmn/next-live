@@ -1,5 +1,5 @@
 'use client'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import Search from './Search'
 import Hamburg from './Hamburg'
@@ -47,6 +47,7 @@ function NavItem({ href, children, }: {
 
 
 export default function Header() {
+  const [logo,setLogo] = useState('')
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const radius = useMotionValue(0)
@@ -60,12 +61,27 @@ export default function Header() {
     [mouseX, mouseY, radius]
   )
   const background = useMotionTemplate`radial-gradient(${radius}px circle at ${mouseX}px ${mouseY}px, var(--spotlight-color) 0%, transparent 65%)`
-
+  function getRandomEmoji() {
+    // Emoji范围：1F600 至 1F64F
+    const emojiStart = 0x1F600;
+    const emojiEnd = 0x1F64F;
+    
+    // 生成随机数
+    const randomCodePoint = Math.floor(Math.random() * (emojiEnd - emojiStart + 1)) + emojiStart;
+  
+    // 将随机生成的代码点转换为字符串
+    const randomEmoji = String.fromCodePoint(randomCodePoint)
+    
+    setLogo(randomEmoji)
+  }
+  useEffect(() => {
+    getRandomEmoji()
+  },[])
   return (
     <div className='sticky top-0 left-0 z-10 h-14 bg-inherit w-screen px-2 shadow-gray-500 shadow-sm'>
       <div className="flex h-full items-center">
         <div className="flex px-2 lg:flex-none">
-          <a className="text-lg font-bold">Lorem</a>
+          <Link href="/" className="text-lg font-bold">{logo}</Link>
         </div>
         <div className="max-sm:hidden flex flex-1 justify-end gap-2">
           <nav

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { getCategoryRooms, searchAnchors } from '@/lib/apis/douyu'
+import { getCategoryRooms } from '@/lib/apis/douyu'
 import RoomCard from '@/components/RoomCard'
 import { LiveResult } from '@/lib/types/apis'
 

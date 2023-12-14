@@ -170,8 +170,6 @@ function App() {
     const details = await getDyinRoomDetail(rid)
     const quality = await getDouyinPlayQualites(details)
     setRoomDetail(details)
-    console.log(details);
-    
     setOptions({
       container: '',
       url: quality[0].data[0],
