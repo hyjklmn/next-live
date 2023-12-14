@@ -2,7 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ScrollArea } from "@/components/ui/scroll-area"
-
 import Hls from 'hls.js';
 import Artplayer from './player';
 import artplayerPluginDanmuku from 'artplayer-plugin-danmuku'
@@ -11,6 +10,7 @@ import DouYuDanmaku from '@/lib/danmaku/douyu';
 import HuYaDanmaku from "@/lib/danmaku/huya";
 import BiliBiliDanmaku from "@/lib/danmaku/bilibili";
 
+import RoomDetail from './(components)/RoomDetail';
 
 import { getPlayQualities, getPlayUrls, getRoomDetail } from '@/lib/apis/douyu';
 import { LiveRoomDetail } from '@/lib/types/apis';
@@ -133,6 +133,7 @@ function App() {
     const details = await getBlRoomDetail(rid)
     const quality = await getBlPlayQualities(details)
     const cdns = await getBlPlayUrls(details, quality[0])
+    setRoomDetail(details)
     setOptions({
       container: '',
       url: cdns.length > 0 ? cdns[0] : '',
@@ -168,6 +169,9 @@ function App() {
   async function initDouyin() {
     const details = await getDyinRoomDetail(rid)
     const quality = await getDouyinPlayQualites(details)
+    setRoomDetail(details)
+    console.log(details);
+    
     setOptions({
       container: '',
       url: quality[0].data[0],
@@ -266,13 +270,12 @@ function App() {
         <div className='w-[80%] h-full'>
           {options ? <Artplayer option={options} getInstance={(art: any) => artRef.current = art} /> : <>Loading</>}
         </div>
-        <div className='max-w-[20%] flex flex-col px-2'>
+        <div className='w-[20%] flex flex-col px-2'>
           <div className='h-[30%]'>
             <div className='sticky left-0 top-0 text-center backdrop-blur'>信息</div>
-            <div>
-
-              {roomDetail?.userName}
-            </div>
+            {
+              roomDetail ? <RoomDetail roomdetail={roomDetail} /> : ''
+            }
           </div>
           <ScrollArea className="h-full overflow-hidden" ref={scrollRef}>
             <div className='sticky left-0 top-0 text-center backdrop-blur'>弹幕</div>

@@ -86,6 +86,7 @@ async function getCategoryRooms(category: LiveSubCategory, page = 1) {
 }
 
 async function getRecommendRooms(page = 1) {
+  getRequestHeaders()
   const offset = (page - 1) * 20
   const result = await fetch(`/dyin/webcast/web/partition/detail/room/?aid=6383&app_name=douyin_web&live_id=1&device_platform=web&count=20&offset=${offset}&partition=720&partition_type=1`, {
     headers: headers
