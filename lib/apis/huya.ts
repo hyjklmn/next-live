@@ -342,13 +342,15 @@ function processAnticode(anticode: string, uid: string, streamname: string): str
   anticodeParams.forEach((value, key) => {
     q[key] = value;
   });
-
+  q["ctype"] = "huya_live"
+  q["t"] = "100"
   q["ver"] = "1";
   q["sv"] = "2110211124";
   q["seqid"] = (parseInt(uid) + Date.now()).toString();
   q["uid"] = uid;
   q["uuid"] = getUUid();
-
+  const wsTime = ((Date.now() / 1000) + 21600).toString(16);
+  const seqId = (Date.now() + parseInt(uid)).toString();
   const ss = md5(`${q["seqid"]}|${q["ctype"]}|${q["t"]}`).toString();
   q["fm"] = decodeURIComponent(atob(q["fm"]))
     .replace("$0", q["uid"])
