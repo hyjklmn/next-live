@@ -22,7 +22,7 @@
     "@types/react": "18.2.33",
     "@types/react-dom": "18.2.14",
     "@types/ws": "^8.5.10",
-    "artplayer": "^5.0.9",
+    "artplayer": "^5.1.1",
     "artplayer-plugin-danmuku": "^5.0.1",
     "autoprefixer": "10.4.16",
     "axios": "^1.6.2",
