@@ -343,7 +343,7 @@ function processAnticode(anticode: string, uid: string, streamname: string): str
     q[key] = value;
   });
   q["ctype"] = "huya_live"
-  q["t"] = "100"
+  q["t"] = "102"
   q["ver"] = "1";
   q["sv"] = "2110211124";
   q["seqid"] = (parseInt(uid) + Date.now()).toString();
